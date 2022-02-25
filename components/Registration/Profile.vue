@@ -11,7 +11,7 @@
         <p class="text-gray-600 leading-tight mt-2">
           Addresing the problems of nutrition in our beloved state.
         </p>
-        <div class="py-6 flex">
+        <div class="py-6 hidden sm:flex">
           <div class="text-center mx-2 md:mx-4">
             <div
               class="h-10 w-10 bg-brand-primary flex items-center justify-center rounded-full mx-auto"
@@ -47,106 +47,32 @@
             <p class="mt-3 text-xs md:text-sm">Education & Expriences</p>
           </div>
         </div>
-        <form class="grid grid-flow-row gap-4 pb-3">
-          <!--<div
-            v-if="showprofile"
-            class="profile mx-auto profile-pic w-45 text-center"
-          >
-            <img
-              v-if="!image2"
-              class="profile-pic"
-              src="/profile.png"
-              alt=""
-              @click="upload"
-            />
-            <img v-else :src="image2" class="profile-pic" alt="" />
-
-            <input
-              id="input"
-              ref="input"
-              type="file"
-              accept="image/*"
-              style="display: none"
-              @change="uploader"
-            />
-            <button id="select-file" @click="upload">
-              Upload profile picture
-            </button>
-          </div>
-
-          <div v-show="showcrop" class="croper">
-            <div ref="crop" class="w-full bg-cover h-72">
-              <vue-croppie
-                ref="croppieRef"
-                :enable-exif="true"
-                :enable-resize="false"
-                :enable-orientation="true"
-                :boundary="{ width: 300, height: 300 }"
-                :viewport="{ width: 200, height: 200, type: 'circle' }"
-                :show-zoomer="false"
-              ></vue-croppie>
-
-             <img v-bind:src="cropped"> 
-            </div>
-            <button class="button" @click="crop">Next</button>
-          </div>
-          <div>
-            <label class="text-lg pl-1" for="title">Title</label>
-            <input
-              id="title"
-              v-model="lastname"
-              class="border px-2 py-3 rounded-md w-full focus:bg-white focus:border-brand-primary focus:outline-none"
-              type="text"
-              placeholder="Product Designer"
-            />
-          </div>
-
-          <div class="">
-            <label class="text-lg pl-1" for="about you">About you</label>
-            <textarea
-              id="about you"
-              name=""
-              placeholder="Tell us a summary about who you are"
-              class="w-full p-3 rounded-2xl border focus:bg-white visited:bg-white focus:border-brand-primary focus:outline-none"
-              cols="30"
-              rows="10"
-            ></textarea>
-          </div>
-
-          <div>
-            <label class="text-lg pl-1" for="title">Skills</label>
+        <div class="mt-6 mb-6 block sm:hidden">
+          <p class="text-gray-500 text-md">Sign up with</p>
+          <div class="mt-4 mb-3 flex">
             <div
-              class="tags border px-2 py-3 rounded-md w-full peer-focus:bg-white peer-focus:border-brand-primary focus:outline-none"
+              class="google px-3 py-2 rounded-md mr-3 text-sm font-medium cursor-pointer"
             >
-              <span
-                v-for="tag in tags"
-                :key="tag"
-                class="bg-brand-acccentLight border border-brand-primary px-3 py-1 rounded-md text-gray-700"
-                >{{ tag }}
-                <span class="cursor-pointer">x</span>
-              </span>
-              <input
-                id="title"
-                v-model="tagvalue"
-                class="peer focus:outline-none"
-                type="text"
-                placeholder="Product Designer"
-                @keydown.enter="addTagValue"
-                @keydown.delete="removeTagValue"
-              />
+              Google
             </div>
-
-            <small>*Main skills first then additional skills</small>
+            <div
+              class="link px-3 py-2 text-white rounded-md mr-3 text-sm font-medium cursor-pointer"
+            >
+              Linkedlin
+            </div>
+            <div
+              class="facebook px-3 py-2 text-white rounded-md mr-3 text-sm font-medium cursor-pointer"
+            >
+              Facebook
+            </div>
           </div>
-          <div>
-            <label for="shirt">T-Shirt size</label>
-            <select id="" name="shirt">
-              <option value="sm">small</option>
-              <option value="m">medium</option>
-              <option value="l">Large</option>
-              <option value="xl">X Large</option>
-            </select>
-          </div>-->
+          <div class="flex items-center justify-between">
+            <span class="w-40 border-b-2 mt-1"></span>
+            <p class="text-gray-500 text-sm mx-1">or</p>
+            <span class="w-40 border-b-2 mt-1"></span>
+          </div>
+        </div>
+        <form class="grid grid-flow-row gap-4 pb-3">
           <div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4 w-full">
               <div>
@@ -154,8 +80,9 @@
                 <input
                   type="text"
                   id="firstName"
+                  v-model="firstName"
                   placeholder="Enter your first name"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
               </div>
               <div>
@@ -163,8 +90,9 @@
                 <input
                   type="text"
                   id="lastName"
+                  v-model="lastName"
                   placeholder="Enter your first name"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
               </div>
             </div>
@@ -174,8 +102,9 @@
                 <input
                   type="email"
                   id="email"
+                  v-model="email"
                   placeholder="Enter your email"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
               </div>
             </div>
@@ -186,14 +115,15 @@
                 <input
                   type="password"
                   id="password"
+                  v-model="password"
                   placeholder="Enter your password"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
               </div>
             </div>
 
             <button
-              class="btn bg-brand-primary text-white tracking-wide py-4 w-full mt-6"
+              class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-6"
               @click.prevent="submit"
             >
               Create Account
@@ -201,24 +131,28 @@
           </div>
           <p class="mt-4 text-center text-sm font-light text-gray-800">
             Have an account?
-            <span class="font-semibold text-brand-primary">login</span>
+            <NuxtLink
+              to="/login"
+              class="font-semibold text-brand-primary cursor-pointer"
+              >login</NuxtLink
+            >
           </p>
 
-          <div class="mt-4 text-center mx-auto">
-            <p>or Continue with</p>
+          <div class="mt-4 text-center mx-auto hidden sm:block">
+            <p class="text-gray-500">or Continue with</p>
             <div class="mt-4 mb-3 flex">
               <div
-                class="bg-red-300 px-2 md:px-4 py-2 rounded-md text-red-900 mx-1 sm:mx-3 text-sm font-medium"
+                class="google px-2 md:px-4 py-2 rounded-md mx-1 sm:mx-3 text-sm font-medium cursor-pointer"
               >
                 Google
               </div>
               <div
-                class="bg-blue-400 px-2 md:px-4 py-2 rounded-md text-white mx-1 sm:mx-3 text-sm font-medium"
+                class="link px-2 md:px-4 py-2 rounded-md text-white mx-1 sm:mx-3 text-sm font-medium cursor-pointer"
               >
                 Linkedlin
               </div>
               <div
-                class="bg-blue-900 px-2 md:px-4 py-2 rounded-md text-white mx-1 sm:mx-3 text-sm font-medium"
+                class="facebook px-2 md:px-4 py-2 rounded-md text-white mx-1 sm:mx-3 text-sm font-medium cursor-pointer"
               >
                 Facebook
               </div>
@@ -242,64 +176,13 @@ export default {
   name: 'Profile',
   data() {
     return {
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
-      image: '',
-      showcrop: false,
-      showprofile: true,
-      image2: '',
-      tagvalue: '',
-      tags: ['designer'],
     }
   },
   methods: {
-    upload() {
-      this.$refs.input.click()
-    },
-    uploader(event) {
-      const files = event.target.files
-      this.files = files[0]
-      const fileName = files[0].name
-      if (fileName.lastIndexOf('.') <= 0) {
-        return alert('Add a valid file')
-      } else {
-        this.image = window.URL.createObjectURL(files[0])
-        this.loadcrop()
-      }
-    },
-    loadcrop() {
-      this.showcrop = true
-      this.$refs.croppieRef.bind({
-        url: this.image,
-      })
-    },
-    crop() {
-      const options = {
-        //  type: 'blob',
-        format: 'png',
-        size: {
-          width: 150,
-        },
-      }
-      this.$refs.croppieRef.result(options, (output) => {
-        this.image2 = output
-        this.showcrop = false
-        this.image = ''
-        this.showprofile = true
-      })
-    },
-    addTagValue() {
-      if (this.addTagValue !== '') {
-        this.tags.push(this.tagvalue)
-      }
-      this.tagvalue = ''
-    },
-    removeTagValue() {
-      //  console.log('deleted')
-      if (this.tagvalue === '') {
-        this.tags.pop()
-      }
-    },
     submit() {
       this.$root.$emit('next')
     },
@@ -310,5 +193,15 @@ export default {
 <style scope>
 .cover {
   background-image: url(/LFBI-Volunteers5.jpeg);
+}
+.google {
+  background: #fdc5c5;
+  color: #f71414;
+}
+.link {
+  background: #5299b8;
+}
+.facebook {
+  background: #1b2768;
 }
 </style>

@@ -61,14 +61,14 @@
                 id="education"
                 v-model="education.school"
                 placeholder="Enter school"
-                class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
               />
               <input
                 type="text"
                 id="education"
                 v-model="education.program"
                 placeholder="Enter program of study"
-                class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
               />
               <div
                 class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4 w-full"
@@ -77,21 +77,21 @@
                   placeholder="Start"
                   format="MM/dd/yyyy"
                   v-model="education.start"
-                  class="bg-gray-300 focus:bg-white focus:outline-none py-2 px-4 shadow-sm mt-2 w-full rounded-lg"
-                  input-class="bg-gray-300 w-full focus:outline-none"
+                  class="border focus:bg-white focus:outline-none py-2 px-4 shadow-sm mt-2 w-full rounded-lg"
+                  input-class="border-0 w-full focus:outline-none"
                 />
                 <date-picker
                   placeholder="End"
                   format="MM/dd/yyyy"
                   v-model="education.end"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
-                  input-class="bg-gray-300 w-full focus:outline-none"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  input-class="border-0 w-full focus:outline-none"
                 />
               </div>
             </div>
             <div class="flex items-center">
               <div
-                class="text-left w-10 bg-gray-300 p-2 rounded-md flex items-center justify-center cursor-pointer mt-4"
+                class="text-left w-10 border p-2 rounded-md flex items-center justify-center cursor-pointer mt-4"
                 @click.prevent="addEducation"
               >
                 <svg
@@ -124,21 +124,21 @@
                 id="experience"
                 v-model="experience.role"
                 placeholder="Enter job title"
-                class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
               />
               <input
                 type="text"
                 id="experience"
                 v-model="experience.company"
                 placeholder="Enter comapny name"
-                class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
               />
               <select
                 type="text"
                 id="experience"
                 v-model="experience.period"
                 placeholder="Enter employment type"
-                class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
               >
                 <option selected disabled>select employment type</option>
                 <option value="full-time">Full Time</option>
@@ -151,15 +151,15 @@
                   placeholder="Start"
                   format="MM/dd/yyyy"
                   v-model="experience.start"
-                  class="bg-gray-300 focus:bg-white focus:outline-none py-2 px-4 shadow-sm mt-2 w-full rounded-lg"
-                  input-class="bg-gray-300 w-full focus:outline-none"
+                  class="border focus:bg-white focus:outline-none py-2 px-4 shadow-sm mt-2 w-full rounded-lg"
+                  input-class="border-0 w-full focus:outline-none"
                 />
                 <date-picker
                   placeholder="End"
                   format="MM/dd/yyyy"
                   v-model="experience.end"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
-                  input-class="bg-gray-300 w-full focus:outline-none"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  input-class="border-0 w-full focus:outline-none"
                 />
               </div>
               <div class="mt-3">
@@ -168,7 +168,7 @@
                   name=""
                   v-model="experience.desc"
                   placeholder="Tell us a summary about who you are"
-                  class="w-full p-3 rounded-2xl bg-gray-300 border focus:bg-white visited:bg-white focus:border-brand-primary focus:outline-none"
+                  class="w-full p-3 rounded-2xl border focus:bg-white visited:bg-white focus:border-brand-primary focus:outline-none"
                   cols="20"
                   rows="5"
                 ></textarea>
@@ -176,7 +176,7 @@
             </div>
             <div class="flex items-center">
               <div
-                class="text-left w-10 bg-gray-300 p-2 rounded-md flex items-center justify-center cursor-pointer mt-4"
+                class="text-left w-10 border p-2 rounded-md flex items-center justify-center cursor-pointer mt-4"
                 @click.prevent="addExperience"
               >
                 <svg
@@ -197,7 +197,7 @@
             </div>
             <div class="flex items-center justify-center mt-4">
               <div
-                class="text-left text-opacity-5 bg-gray-300 p-2 rounded-md flex items-center justify-center cursor-pointer mt-4"
+                class="text-left text-opacity-5 border p-2 rounded-md flex items-center justify-center cursor-pointer mt-4"
                 @click.prevent="pledge = !pledge"
               >
                 <svg
@@ -218,8 +218,8 @@
               <p class="ml-3 mt-3">I have read the community service pledge</p>
             </div>
             <button
-              class="btn bg-brand-primary text-white tracking-wide py-4 w-full mt-4"
-              @click.prevent=""
+              class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-4"
+              @click.prevent="submit"
             >
               Continue
             </button>

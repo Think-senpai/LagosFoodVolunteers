@@ -56,7 +56,7 @@
                   type="number"
                   id="phone"
                   placeholder="Enter your mobile no"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
               </div>
             </div>
@@ -68,7 +68,7 @@
                   type="text"
                   id="address"
                   placeholder="Enter your address"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
               </div>
             </div>
@@ -82,7 +82,7 @@
                   v-model="country"
                   :country="country"
                   topCountry="US"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
               </div>
               <div>
@@ -91,13 +91,13 @@
                   v-model="region"
                   :country="country"
                   :region="region"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
               </div>
             </div>
 
             <button
-              class="btn bg-brand-primary text-white tracking-wide py-4 w-full mt-6"
+              class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-6"
               @click.prevent="submit"
             >
               Continue

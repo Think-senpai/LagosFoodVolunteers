@@ -67,7 +67,7 @@
             </button>-->
           </div>
 
-          <div v-show="showcrop" class="croper">
+          <div v-show="showcrop" class="croper flex flex-col text-left">
             <div ref="crop" class="w-full bg-cover h-72">
               <vue-croppie
                 ref="croppieRef"
@@ -81,7 +81,12 @@
 
               <img v-bind:src="cropped" />
             </div>
-            <button class="button" @click="crop">Next</button>
+            <button
+              class="button bg-brand-primary text-white px-3 py-1 bg-pro mt-4 w-20 rounded-md"
+              @click.prevent="crop"
+            >
+              Crop
+            </button>
           </div>
 
           <div class="">
@@ -89,8 +94,9 @@
             <textarea
               id="about you"
               name=""
+              v-model="about"
               placeholder="Tell us a summary about who you are"
-              class="w-full p-3 rounded-2xl bg-gray-300 border focus:bg-white visited:bg-white focus:border-brand-primary focus:outline-none"
+              class="w-full p-3 rounded-2xl border focus:bg-white visited:bg-white focus:border-brand-primary focus:outline-none"
               cols="20"
               rows="5"
             ></textarea>
@@ -100,8 +106,8 @@
             <label class="text-lg pl-1" for="title">Title</label>
             <input
               id="title"
-              v-model="lastname"
-              class="border bg-gray-300 px-2 py-3 rounded-md w-full focus:bg-white focus:border-brand-primary focus:outline-none"
+              v-model="title"
+              class="border px-2 py-3 rounded-md w-full focus:bg-white focus:border-brand-primary focus:outline-none"
               type="text"
               placeholder="Product Designer"
             />
@@ -110,31 +116,40 @@
           <div class="">
             <label class="text-lg pl-1" for="title">Skills</label>
             <div
-              class="tags bg-gray-300 border px-4 py-3 rounded-md w-full peer-focus:bg-white peer-focus:border-brand-primary focus:outline-none"
+              class="tags border flex flex-wrap items-center gap-2 px-4 py-3 rounded-md w-full peer-focus:bg-white peer-focus:border-brand-primary focus:outline-none"
             >
-              <span
-                v-for="tag in tags"
+              <div
+                v-for="(tag, index) in tags"
                 :key="tag"
-                class="bg-brand-acccentLight border border-brand-primary px-3 mr-3 py-1 rounded-md text-gray-700"
-                >{{ tag }}
-                <span class="cursor-pointer">x</span>
-              </span>
+                class="bg-brand-acccentLight tag flex-grow border border-brand-primary px-3 mr-3 py-1 rounded-md text-gray-700"
+              >
+                <span class="mr-2">{{ tag }}</span>
+                <span
+                  class="cursor-pointer text-right"
+                  @click.prevent="removeTagValue(index)"
+                  >x</span
+                >
+              </div>
               <input
                 id="title"
                 v-model="tagvalue"
-                class="peer focus:outline-none bg-gray-300"
+                class="peer focus:outline-none flex-grow"
                 type="text"
                 placeholder="Product Designer"
                 @keydown.enter.prevent="addTagValue"
-                @keydown.delete.prevent="removeTagValue(e)"
               />
             </div>
 
             <small>*Main skills first then additional skills</small>
           </div>
-          <div class="">
-            <label for="shirt">T-Shirt size</label>
-            <select id="" name="shirt">
+          <div>
+            <label for="shirt">T-Shirt size: </label>
+            <select
+              id=""
+              name="shirt"
+              v-model="size"
+              class="border px-3 py-1 ml-2 rounded-md"
+            >
               <option value="sm">small</option>
               <option value="m">medium</option>
               <option value="l">Large</option>
@@ -143,7 +158,7 @@
           </div>
           <div>
             <button
-              class="btn bg-brand-primary text-white tracking-wide py-4 w-full mt-6"
+              class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-6"
               @click.prevent="submit"
             >
               Continue
@@ -191,12 +206,15 @@ export default {
   name: 'CompleteProfile',
   data() {
     return {
+      about: '',
+      title: '',
+      size: '',
       image: '',
       showcrop: false,
       showprofile: true,
       image2: '',
       tagvalue: '',
-      tags: [],
+      tags: ['designer'],
     }
   },
   methods: {
@@ -241,11 +259,11 @@ export default {
       }
       this.tagvalue = ''
     },
-    removeTagValue(e) {
-      console.log('target', e.target)
+    removeTagValue(index) {
+      console.log('target', index)
       //  console.log('deleted')
       if (this.tagvalue === '') {
-        this.tags.pop()
+        this.tags.splice(index, 1)
       }
     },
     submit() {
@@ -254,3 +272,15 @@ export default {
   },
 }
 </script>
+
+<style scope>
+.croppie-container .cr-boundary {
+  margin: 0 !important;
+}
+.tag {
+  background: #c8efda;
+  color: #498202;
+  display: flex;
+  justify-content: space-between;
+}
+</style>

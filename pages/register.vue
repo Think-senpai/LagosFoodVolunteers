@@ -9,7 +9,7 @@ import EducationExprience from '@/components/Registration/EducationExprience'
 import Profile from '@/components/Registration/Profile'
 import CompleteProfile from '@/components/Registration/CompleteProfile'
 import ContactInfo from '@/components/Registration/ContactInfo'
-
+import ProfileSuccessful from '@/components/Registration/ProfileSuccessful'
 export default {
   name: 'RegisterPage',
   data() {
@@ -28,6 +28,9 @@ export default {
         },
         {
           component: EducationExprience,
+        },
+        {
+          component: ProfileSuccessful,
         },
       ],
     }
