@@ -21,7 +21,11 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/croppie.client.js'],
+  plugins: [
+    '~/plugins/croppie.client.js',
+    '~/plugins/selectCountry.client.js',
+    '~/plugins/datePicker.client.js',
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
