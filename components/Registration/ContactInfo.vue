@@ -55,6 +55,7 @@
                 <input
                   type="number"
                   id="phone"
+                  v-model="register.phone"
                   placeholder="Enter your mobile no"
                   class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
@@ -67,6 +68,7 @@
                 <input
                   type="text"
                   id="address"
+                  v-model="register.address"
                   placeholder="Enter your address"
                   class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
@@ -79,7 +81,7 @@
               <div>
                 <label for="country">Country</label><br />
                 <country-select
-                  v-model="country"
+                  v-model="register.country"
                   :country="country"
                   topCountry="US"
                   class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
@@ -88,7 +90,7 @@
               <div>
                 <label for="lastname">Region</label><br />
                 <region-select
-                  v-model="region"
+                  v-model="register.region"
                   :country="country"
                   :region="region"
                   class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
@@ -121,15 +123,30 @@ export default {
   name: 'ContactInfo',
   data() {
     return {
-      phone: '',
-      address: '',
-      country: '',
-      region: '',
+      register: {
+        phone: '',
+        address: '',
+        country: '',
+        region: '',
+      },
+      error: {
+        phone: '',
+        address: '',
+        country: '',
+        region: '',
+      },
     }
   },
   methods: {
     submit() {
       this.$root.$emit('next')
+      const payload = {
+        phone: this.register.phone,
+        address: this.register.address,
+        country: this.register.country,
+        region: this.register.region,
+      }
+      this.$store.commit('contactInfo', payload)
     },
   },
 }

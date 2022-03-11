@@ -80,20 +80,34 @@
                 <input
                   type="text"
                   id="firstName"
-                  v-model="firstName"
+                  v-model="register.firstName"
                   placeholder="Enter your first name"
-                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  v-bind:class="
+                    error.firstName
+                      ? 'ring ring-red-500 focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
+                      : 'focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
+                  "
                 />
+                <p class="text-center text-red-500 text-xs mt-2">
+                  {{ error.firstName }}
+                </p>
               </div>
               <div>
                 <label for="lastname">Last name</label><br />
                 <input
                   type="text"
                   id="lastName"
-                  v-model="lastName"
+                  v-model="register.lastName"
                   placeholder="Enter your first name"
-                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  v-bind:class="
+                    error.lastName
+                      ? 'ring ring-red-500 focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
+                      : 'focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
+                  "
                 />
+                <p class="text-center text-red-500 text-xs mt-2">
+                  {{ error.lastName }}
+                </p>
               </div>
             </div>
             <div class="w-full mt-3">
@@ -102,23 +116,40 @@
                 <input
                   type="email"
                   id="email"
-                  v-model="email"
+                  v-model="register.email"
                   placeholder="Enter your email"
-                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  v-bind:class="
+                    error.email
+                      ? 'ring ring-red-500 focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
+                      : 'focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
+                  "
                 />
+                <p class="text-center text-red-500 text-xs mt-2">
+                  {{ error.email }}
+                </p>
               </div>
             </div>
 
             <div class="w-full mt-3">
               <div>
                 <label for="password">Password</label><br />
-                <input
-                  type="password"
-                  id="password"
-                  v-model="password"
-                  placeholder="Enter your password"
-                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
-                />
+                <div class="relative flex">
+                  <input
+                    type="password"
+                    id="password"
+                    v-model="register.password"
+                    placeholder="Enter your password"
+                    v-bind:class="
+                      error.password
+                        ? 'ring ring-red-500 focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
+                        : 'focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
+                    "
+                  />
+                </div>
+
+                <p class="text-center text-red-500 text-xs mt-2">
+                  {{ error.password }}
+                </p>
               </div>
             </div>
 
@@ -176,17 +207,67 @@ export default {
   name: 'Profile',
   data() {
     return {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
+      loading: false,
+      disableButton: true,
+      register: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+      },
+      error: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+      },
     }
   },
   methods: {
     submit() {
       this.$root.$emit('next')
+      if (this.register.firstName === '') {
+        this.error.firstName = 'firstname is required'
+        setTimeout(() => {
+          this.error.firstName = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else if (this.register.lastName === '') {
+        this.error.lastName = 'last name is required'
+        setTimeout(() => {
+          this.error.lastName = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else if (this.register.email === '') {
+        this.error.email = 'email is required'
+        setTimeout(() => {
+          this.error.email = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else if (this.register.password === '') {
+        this.error.password = 'password is required'
+        setTimeout(() => {
+          this.error.password = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else {
+        this.$store.commit('enableNext', true)
+
+        const payload = {
+          firstName: this.register.firstName,
+          lastName: this.register.lastName,
+          email: this.register.email,
+          password: this.register.password,
+        }
+        this.$store.commit('profile', payload)
+      }
     },
   },
+  created() {},
 }
 </script>
 

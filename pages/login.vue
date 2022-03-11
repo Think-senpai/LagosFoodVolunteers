@@ -13,27 +13,47 @@
             <div>
               <div class="w-full mt-3">
                 <div>
-                  <label for="email">Email Address</label><br />
-                  <input
-                    type="email"
-                    id="email"
-                    v-model="email"
-                    placeholder="Enter your email"
-                    class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
-                  />
+                  <div>
+                    <label for="email">Email Address</label><br />
+                    <input
+                      type="email"
+                      id="email"
+                      v-model="login.email"
+                      placeholder="Enter your email"
+                      v-bind:class="
+                        error.email
+                          ? 'ring ring-red-500 focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
+                          : 'focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
+                      "
+                    />
+                  </div>
+                  <p class="text-center text-red-500 text-xs mt-2">
+                    {{ error.email }}
+                  </p>
                 </div>
               </div>
 
               <div class="w-full mt-3">
                 <div>
-                  <label for="password">Password</label><br />
-                  <input
-                    type="password"
-                    id="password"
-                    v-model="password"
-                    placeholder="Enter your password"
-                    class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
-                  />
+                  <div>
+                    <label for="password">Password</label><br />
+                    <input
+                      type="password"
+                      id="password"
+                      v-model="login.password"
+                      placeholder="Enter your password"
+                      v-bind:class="
+                        error.password
+                          ? 'ring ring-red-500 focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
+                          : 'focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
+                      "
+                    />
+                  </div>
+
+                  <p class="text-center text-red-500 text-xs mt-2">
+                    {{ error.password }}
+                  </p>
+                  <p>{{ errorMsg && errorMsg.slice(10) }}</p>
                 </div>
               </div>
 
@@ -41,7 +61,10 @@
                 class="btn bg-brand-primary text-white tracking-wide py-4 w-full mt-10"
                 @click.prevent="submit"
               >
-                Log In
+                <div class="Loading" v-if="loading">
+                  <Spinner />
+                </div>
+                <div v-else>Log In</div>
               </button>
             </div>
             <p class="mt-4 text-left text-gray-500 underline">
@@ -89,5 +112,73 @@
 </template>
 
 <script>
-export default {}
+import { mapActions, mapGetters } from 'vuex'
+import Spinner from '@/components/Spinner'
+export default {
+  layout: 'auth',
+  component: {
+    Spinner,
+  },
+  data() {
+    return {
+      loding: false,
+      login: {
+        email: '',
+        password: '',
+      },
+      error: {
+        email: '',
+        password: '',
+      },
+    }
+  },
+  computed: {
+    ...mapGetters({
+      userId: 'userId',
+      errorMsg: 'errorMsg',
+    }),
+  },
+  methods: {
+    ...mapActions(['postLogin']),
+    async submit() {
+      this.loading = true
+      if (this.login.email === '') {
+        this.error.email = 'Email is required'
+        setTimeout(() => {
+          this.error.email = ''
+        }, 1000)
+        this.loading = false
+      } else if (this.login.password === '') {
+        this.error.password = 'password is required'
+        setTimeout(() => {
+          this.error.password = ''
+        }, 1000)
+        this.loading = false
+      } else {
+        const payload = {
+          email: this.login.email,
+          password: this.login.password,
+        }
+        this.$store.commit('profile', payload)
+        await this.postLogin()
+
+        if (this.userId) {
+          this.$router.push('/profile')
+          this.loading = false
+        }
+        if (this.errorMsg) {
+          this.loading = false
+        }
+      }
+    },
+  },
+}
 </script>
+
+<style scope>
+.Loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

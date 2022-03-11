@@ -75,14 +75,14 @@
               >
                 <date-picker
                   placeholder="Start"
-                  format="MM/dd/yyyy"
+                  :format="customData"
                   v-model="education.start"
                   class="border focus:bg-white focus:outline-none py-2 px-4 shadow-sm mt-2 w-full rounded-lg"
                   input-class="border-0 w-full focus:outline-none"
                 />
                 <date-picker
                   placeholder="End"
-                  format="MM/dd/yyyy"
+                  :format="customData"
                   v-model="education.end"
                   class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                   input-class="border-0 w-full focus:outline-none"
@@ -149,14 +149,14 @@
               >
                 <date-picker
                   placeholder="Start"
-                  format="MM/dd/yyyy"
+                  :format="customData"
                   v-model="experience.start"
                   class="border focus:bg-white focus:outline-none py-2 px-4 shadow-sm mt-2 w-full rounded-lg"
                   input-class="border-0 w-full focus:outline-none"
                 />
                 <date-picker
                   placeholder="End"
-                  format="MM/dd/yyyy"
+                  :format="customData"
                   v-model="experience.end"
                   class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                   input-class="border-0 w-full focus:outline-none"
@@ -224,6 +224,7 @@
               Continue
             </button>
           </div>
+          <p>{{ errorMsg && errorMsg.slice(10) }}</p>
         </form>
       </div>
     </div>
@@ -238,10 +239,13 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import moment from 'moment'
 export default {
   name: 'EducationExprience',
   data() {
     return {
+      loading: false,
       educations: [
         {
           school: '',
@@ -263,7 +267,16 @@ export default {
       pledge: false,
     }
   },
+  computed: {
+    ...mapGetters({
+      userId: 'userId',
+      errorMsg: 'errorMsg',
+    }),
+  },
   methods: {
+    customData(date) {
+      return moment(date).format('MMMM Do YYYY')
+    },
     addEducation() {
       this.educations.push({
         school: '',
@@ -285,8 +298,20 @@ export default {
         desc: '',
       })
     },
-    submit() {
-      this.$root.$emit('next')
+    ...mapActions(['postRegister']),
+    async submit() {
+      this.loading = true
+      // console.log(this.experiences)
+      const payload = {
+        educations: this.educations,
+        experiences: this.experiences,
+      }
+      this.$store.commit('educationInfo', payload)
+      await this.postRegister()
+      if (this.userId) {
+        this.$root.$emit('next')
+        this.loading = false
+      }
     },
   },
 }
