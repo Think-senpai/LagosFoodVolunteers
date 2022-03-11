@@ -21,7 +21,6 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-<<<<<<< HEAD
   plugins: [
     '~/plugins/croppie.client.js',
     '~/plugins/selectCountry.client.js',
@@ -29,9 +28,6 @@ export default {
     '~/plugins/firebase.client.js',
     '~plugins/vue-js-modal.js',
   ],
-=======
-  plugins: ['~/plugins/croppie.client.js'],
->>>>>>> 6be8659041b83b09af120d84481d4acfcef09924
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
