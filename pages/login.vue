@@ -139,7 +139,7 @@ export default {
     }),
   },
   methods: {
-    ...mapActions(['postLogin']),
+    ...mapActions(['postLogin', 'signOut']),
     async submit() {
       this.loading = true
       if (this.login.email === '') {
@@ -171,6 +171,9 @@ export default {
         }
       }
     },
+  },
+  mounted() {
+    this.signOut()
   },
 }
 </script>

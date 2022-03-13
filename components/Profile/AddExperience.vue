@@ -103,7 +103,7 @@ export default {
   },
   props: {
     experiences: {
-      type: Object,
+      type: Array,
       required: true,
     },
   },
@@ -113,22 +113,29 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['updateExperience', 'getCurrentProfile']),
+    ...mapActions(['addExperience', 'getCurrentProfile']),
     customData(date) {
       return moment(date).format('MMMM Do YYYY')
     },
     async save() {
-      this.listExperiences.push({
+      /* this.listExperiences.push({
         role: this.role,
         company: this.company,
         period: this.period,
         start: this.start,
         end: this.end,
         desc: this.desc,
-      })
-      const payload = { experiences: this.listExperiences }
-      this.$store.commit('educationInfo', payload)
-      await this.updateExperience()
+      }) */
+      const payload = {
+        role: this.role,
+        company: this.company,
+        period: this.period,
+        start: this.start,
+        end: this.end,
+        desc: this.desc,
+      }
+      this.$store.commit('educationInfo', { experiences: this.listExperiences })
+      await this.addExperience(payload)
       this.$modal.hide('add-experience-modal')
       await this.getCurrentProfile()
     },

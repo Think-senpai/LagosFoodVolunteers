@@ -38,12 +38,15 @@
             <div class="flex flex-row mt-2 items-center justify-start">
               <div
                 class="cursor-pointer mr-6"
-                @click="toggleEditAddEducationModal(education)"
+                @click="toggleEditAddEducationModal(education, index)"
               >
                 <img :src="require('@/assets/icon/edit.svg')" class="" alt="" />
                 <p class="text-gray-400">Edit</p>
               </div>
-              <div class="cursor-pointer mt-1">
+              <div
+                class="cursor-pointer mt-1"
+                @click="toggleDeleteEducation(index)"
+              >
                 <img
                   :src="require('@/assets/icon/delete.svg')"
                   class=""
@@ -110,31 +113,53 @@
         </div>
       </div>
     </modal>
-    <update-Education :editableEducation="education" />
+    <update-Education :editableEducation="education" :index="index" />
   </div>
 </template>
 
 <script>
-import updateEducation from '@/components/Profile/updateEducation'
+import { mapActions } from 'vuex'
+import UpdateEducation from '@/components/Profile/UpdateEducation'
 export default {
   data() {
     return {
       education: {},
+      index: '',
     }
   },
   components: {
-    'update-Education': updateEducation,
+    'update-Education': UpdateEducation,
   },
-  props: ['editableProfile'],
+  props: {
+    editableProfile: {
+      type: Array,
+      required: false,
+    },
+  },
+  computed: {
+    listEditableProfile: function () {
+      return this.editableProfile
+    },
+  },
   mounted() {
     this.$root.$on('editEducation', () => {
       this.$modal.show('edit-education-modal')
     })
   },
   methods: {
-    toggleEditAddEducationModal(education) {
+    ...mapActions(['deleteEducation']),
+    toggleEditAddEducationModal(education, index) {
+      const payload = { educations: this.listEditableProfile }
+      this.$store.commit('educationInfo', payload)
       this.education = education
-      this.$root.$emit('updateEducation')
+      this.index = index
+      this.$root.$emit('updateEducations')
+    },
+    async toggleDeleteEducation(index) {
+      const payload = { educations: this.listEditableProfile }
+      this.$store.commit('educationInfo', payload)
+      await this.deleteEducation(index)
+      this.$modal.hide('edit-education-modal')
     },
   },
 }

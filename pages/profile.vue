@@ -41,7 +41,7 @@
 
               <div class="flex w-10/12 sm:w-9/12 md:w-full flex-col">
                 <p class="text-gray-400 mb-6 mx-2">
-                  {{ currentProfile.about }}
+                  {{ currentProfile && currentProfile.about }}
                 </p>
                 <!-- <p class="text-gray-400 mb-6 mx-2">
                   {{
@@ -85,7 +85,7 @@
           >
             <div class="flex items-center justify-between mb-4">
               <h3 class="font-medium mb-2 mx-2">Summary</h3>
-              <div class="cursor-pointer">
+              <div class="cursor-pointer" @click="toggleupdateAboutModal()">
                 <img :src="require('@/assets/icon/edit.svg')" class="" alt="" />
               </div>
             </div>
@@ -244,7 +244,7 @@
                   <div class="mr-3">
                     <img
                       :src="require('@/assets/images/school.png')"
-                      class="rounded-full w-16"
+                      class="rounded-full w-12"
                       alt=""
                     />
                   </div>
@@ -305,7 +305,7 @@
           </div>
         </div>
         <div
-          class="col-span-3 md:col-span-1 py-8 px-2 md:px-6 border-2 border-gray-300 w-full rounded-lg bg-brand-backgroundLight mb-10 flex flex-col"
+          class="col-span-3 md:col-span-1 py-8 px-6 border-2 border-gray-300 w-full rounded-lg bg-brand-backgroundLight mb-10 flex flex-col"
         >
           <h3 class="font-medium text-gray-400 mb-2">SKILL SET</h3>
           <div class="flex flex-wrap mt-6">
@@ -349,17 +349,20 @@
       <add-Experience :experiences="experiences" />
       <edit-Education :editableProfile="editableProfile" />
       <edit-Experience :editableProfile="editableProfile" />
+      <about-About :about="about" />
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import AddEducation from '@/components/Profile/AddEducation'
 import AddExperience from '@/components/Profile/AddExperience'
 import EditEducation from '@/components/Profile/EditEducation'
 import EditExperience from '@/components/Profile/EditExperience'
+import UpdateAbout from '@/components/Profile/UpdateAbout'
 import Spinner from '@/components/Spinner'
 export default {
   layout: 'profile',
@@ -367,10 +370,10 @@ export default {
     return {
       loading: false,
       generatedImage: '',
-      currentProfile: [],
       editableProfile: {},
       experiences: [],
       educations: [],
+      about: '',
     }
   },
   components: {
@@ -378,6 +381,7 @@ export default {
     'add-Experience': AddExperience,
     'edit-Education': EditEducation,
     'edit-Experience': EditExperience,
+    'about-About': UpdateAbout,
     Spinner,
   },
   methods: {
@@ -397,6 +401,11 @@ export default {
       this.editableProfile = this.currentProfile.experiences
       this.$root.$emit('editExperience')
     },
+    toggleupdateAboutModal() {
+      this.about = this.currentProfile.about
+      // console.log(this.about)
+      this.$root.$emit('updateAbout')
+    },
     generateName() {
       const date = new Date().valueOf()
       let text = ''
@@ -410,7 +419,18 @@ export default {
       return date + '.' + text + '.jpeg'
     },
   },
-  computed: {},
+  computed: {
+    ...mapGetters({
+      currentProfile: 'currentProfile',
+    }),
+    trucatedText: function () {
+      if (this.currentProfile.about.length > 171) {
+        return this.currentProfile.about.substring(0, 171) + '...Read more'
+      } else {
+        return this.currentProfile.about
+      }
+    },
+  },
   filters: {
     trucate: function (text, length, suffix) {
       if (text.length > length) {
@@ -421,17 +441,21 @@ export default {
     },
   },
   async mounted() {
+    // window.location.reload()
     this.loading = true
     await firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.$store.dispatch('getCurrentProfile', user)
+        this.$store.dispatch('getCurrentProfile')
         // console.log(user)
-        this.currentProfile = JSON.parse(localStorage.getItem('profile'))
+        console.log(this.currentProfile)
+        // this.currentProfile = JSON.parse(localStorage.getItem('profile'))
+      } else {
+        this.$router.push('/login')
       }
       if (this.currentProfile) {
         this.loading = false
       }
-      console.log(this.currentProfile)
+      // console.log(this.currentProfile)
       const arr = this.currentProfile && this.currentProfile.image.split(',')
       const bstr = atob(arr[1])
       let n = bstr.length
@@ -451,11 +475,18 @@ export default {
 }
 </script>
 
-<style scope>
+<style>
 .vm--container .vm--modal {
   border-radius: 18px !important;
   top: 80px !important;
   height: 480px !important;
   overflow-y: scroll !important;
+}
+@media screen and (max-width: 600px) {
+  .vm--container .vm--modal {
+    width: 370px !important;
+    left: 0px !important;
+    margin: 0 auto !important;
+  }
 }
 </style>

@@ -48,7 +48,7 @@
             <div class="flex flex-row mt-2 items-center justify-start">
               <div
                 class="cursor-pointer mr-6"
-                @click="toggleEditAddExperienceModal(experiences)"
+                @click="toggleEditAddExperienceModal(experiences, index)"
               >
                 <img :src="require('@/assets/icon/edit.svg')" class="" alt="" />
                 <p class="text-gray-400">Edit</p>
@@ -103,16 +103,18 @@
         </div>
       </div>
     </modal>
-    <update-Experience :editableExperience="experience" />
+    <update-Experience :editableExperience="experience" :index="index" />
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import UpdateExperience from '@/components/Profile/UpdateExperience'
 export default {
   data() {
     return {
       experience: {},
+      index: '',
     }
   },
   components: {
@@ -120,7 +122,7 @@ export default {
   },
   props: {
     editableProfile: {
-      type: Object,
+      type: Array,
       required: false,
     },
   },
@@ -135,14 +137,21 @@ export default {
     })
   },
   methods: {
-    toggleEditAddExperienceModal(experiences) {
+    ...mapActions(['deleteExperience']),
+    toggleEditAddExperienceModal(experiences, index) {
+      const payload = { experiences: this.listEditableProfile }
+      this.$store.commit('educationInfo', payload)
       this.experience = experiences
-      console.log(this.experience)
-      this.$root.$emit('updateExperience')
+      this.index = index
+      // console.log(this.experience)
+      this.$root.$emit('updateExperiences')
     },
-    toggleDeleteExperience(index) {
-      // console.log(index)
-      // this.listEditableProfile.slice(0, index)
+    async toggleDeleteExperience(index) {
+      const payload = { experiences: this.listEditableProfile }
+      this.$store.commit('educationInfo', payload)
+      await this.deleteExperience(index)
+      this.$modal.hide('edit-experience-modal')
+      // this.listEditableProfile.splice(index, 1)
       // console.log(this.listEditableProfile)
     },
   },

@@ -27,7 +27,7 @@
           <label>Start</label>
           <date-picker
             placeholder="Start"
-            format="MM/dd/yyyy"
+            :format="customData"
             class="border focus:bg-white focus:outline-none py-2 px-4 shadow-sm mt-2 w-full rounded-lg"
             input-class="border-0 w-full focus:outline-none"
           />
@@ -36,7 +36,7 @@
           <label>End</label>
           <date-picker
             placeholder="End"
-            format="MM/dd/yyyy"
+            :format="customData"
             class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
             input-class="border-0 w-full focus:outline-none"
           />
@@ -68,7 +68,7 @@ export default {
   },
   props: {
     educations: {
-      type: Object,
+      type: Array,
       required: true,
     },
   },
@@ -78,20 +78,25 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['updateEducation', 'getCurrentProfile']),
+    ...mapActions(['addEducation', 'getCurrentProfile']),
     customData(date) {
       return moment(date).format('MMMM Do YYYY')
     },
     async save() {
-      this.listEducation.push({
+      /* this.listEducation.push({
         school: this.school,
         program: this.program,
         start: this.start,
         end: this.end,
-      })
-      const payload = { educations: this.listEducation }
-      this.$store.commit('educationInfo', payload)
-      await this.updateEducation()
+      }) */
+      const payload = {
+        school: this.school,
+        program: this.program,
+        start: this.start,
+        end: this.end,
+      }
+      this.$store.commit('educationInfo', { educations: this.listEducation })
+      await this.addEducation(payload)
       this.$modal.hide('add-education-modal')
       await this.getCurrentProfile()
     },
