@@ -25,6 +25,8 @@ export default {
     '~/plugins/croppie.client.js',
     '~/plugins/selectCountry.client.js',
     '~/plugins/datePicker.client.js',
+    '~/plugins/firebase.client.js',
+    '~plugins/vue-js-modal.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -36,6 +38,7 @@ export default {
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/fontawesome',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -50,6 +53,13 @@ export default {
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/',
+  },
+
+  fontawesome: {
+    icons: {
+      solid: true,
+      brands: true,
+    },
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa

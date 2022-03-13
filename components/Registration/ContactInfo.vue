@@ -55,8 +55,9 @@
                 <input
                   type="number"
                   id="phone"
+                  v-model="register.phone"
                   placeholder="Enter your mobile no"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
               </div>
             </div>
@@ -67,8 +68,9 @@
                 <input
                   type="text"
                   id="address"
+                  v-model="register.address"
                   placeholder="Enter your address"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
               </div>
             </div>
@@ -79,25 +81,25 @@
               <div>
                 <label for="country">Country</label><br />
                 <country-select
-                  v-model="country"
+                  v-model="register.country"
                   :country="country"
                   topCountry="US"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
               </div>
               <div>
                 <label for="lastname">Region</label><br />
                 <region-select
-                  v-model="region"
+                  v-model="register.region"
                   :country="country"
                   :region="region"
-                  class="bg-gray-300 focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
               </div>
             </div>
 
             <button
-              class="btn bg-brand-primary text-white tracking-wide py-4 w-full mt-6"
+              class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-6"
               @click.prevent="submit"
             >
               Continue
@@ -121,15 +123,30 @@ export default {
   name: 'ContactInfo',
   data() {
     return {
-      phone: '',
-      address: '',
-      country: '',
-      region: '',
+      register: {
+        phone: '',
+        address: '',
+        country: '',
+        region: '',
+      },
+      error: {
+        phone: '',
+        address: '',
+        country: '',
+        region: '',
+      },
     }
   },
   methods: {
     submit() {
       this.$root.$emit('next')
+      const payload = {
+        phone: this.register.phone,
+        address: this.register.address,
+        country: this.register.country,
+        region: this.register.region,
+      }
+      this.$store.commit('contactInfo', payload)
     },
   },
 }
