@@ -44,7 +44,10 @@
 
               <span class="ml-2 text-white">Search opportunities</span>
             </button>
-            <button class="bg-button-2 px-8 rounded-md py-2 flex items-center">
+            <button
+              class="bg-button-2 px-8 rounded-md py-2 flex items-center"
+              @click.prevent="submit"
+            >
               <svg
                 width="20"
                 height="20"
@@ -58,7 +61,7 @@
                 />
               </svg>
 
-              <span class="ml-2 text-home">Back to home</span>
+              <span class="ml-2 text-home">Back to Profile</span>
             </button>
           </div>
         </div>
@@ -76,8 +79,21 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'ProfileSuccessful',
+  computed: {
+    ...mapGetters({
+      userId: 'userId',
+    }),
+  },
+  methods: {
+    submit() {
+      if (this.userId) {
+        this.$router.push('/profile')
+      }
+    },
+  },
 }
 </script>
 
