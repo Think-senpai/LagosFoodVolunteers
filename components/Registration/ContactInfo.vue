@@ -59,6 +59,9 @@
                   placeholder="Enter your mobile no"
                   class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
+                <p class="text-center text-red-500 text-xs mt-2">
+                  {{ error.phone }}
+                </p>
               </div>
             </div>
 
@@ -72,6 +75,9 @@
                   placeholder="Enter your address"
                   class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
+                <p class="text-center text-red-500 text-xs mt-2">
+                  {{ error.address }}
+                </p>
               </div>
             </div>
 
@@ -82,19 +88,26 @@
                 <label for="country">Country</label><br />
                 <country-select
                   v-model="register.country"
-                  :country="country"
-                  topCountry="US"
+                  :country="register.country"
+                  topCountry="NG"
                   class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
+                <p class="text-center text-red-500 text-xs mt-2">
+                  {{ error.country }}
+                </p>
               </div>
               <div>
                 <label for="lastname">Region</label><br />
                 <region-select
                   v-model="register.region"
-                  :country="country"
-                  :region="region"
+                  :country="register.country"
+                  :region="register.region"
+                  defaultRegion="NG"
                   class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
+                <p class="text-center text-red-500 text-xs mt-2">
+                  {{ error.region }}
+                </p>
               </div>
             </div>
 
@@ -123,6 +136,7 @@ export default {
   name: 'ContactInfo',
   data() {
     return {
+      loading: false,
       register: {
         phone: '',
         address: '',
@@ -138,16 +152,62 @@ export default {
     }
   },
   methods: {
+    validatePhoneNo(number) {
+      const PHONENO_REGEX =
+        /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/ //eslint-disable-line
+      return PHONENO_REGEX.test(number)
+    },
     submit() {
       this.$root.$emit('next')
-      const payload = {
-        phone: this.register.phone,
-        address: this.register.address,
-        country: this.register.country,
-        region: this.register.region,
+      if (this.register.phone === '') {
+        this.error.phone = 'Phone no is required'
+        setTimeout(() => {
+          this.error.phone = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else if (!this.validatePhoneNo(this.register.phone)) {
+        this.error.phone = 'Invalid phone number'
+        setTimeout(() => {
+          this.error.phone = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else if (this.register.address === '') {
+        this.error.address = 'Address no is required'
+        setTimeout(() => {
+          this.error.address = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else if (this.register.country === '') {
+        this.error.country = 'Country is required'
+        setTimeout(() => {
+          this.error.country = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else if (this.register.region === '') {
+        this.error.region = 'Region is required'
+        setTimeout(() => {
+          this.error.region = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else {
+        this.$store.commit('enableNext', true)
+        const payload = {
+          phone: this.register.phone,
+          address: this.register.address,
+          country: this.register.country,
+          region: this.register.region,
+        }
+        this.$store.commit('contactInfo', payload)
       }
-      this.$store.commit('contactInfo', payload)
     },
+  },
+  created() {
+    this.$store.commit('enableNext', false)
   },
 }
 </script>

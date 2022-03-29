@@ -82,11 +82,7 @@
                   id="firstName"
                   v-model="register.firstName"
                   placeholder="Enter your first name"
-                  v-bind:class="
-                    error.firstName
-                      ? 'ring ring-red-500 focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
-                      : 'focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
-                  "
+                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
                 <p class="text-center text-red-500 text-xs mt-2">
                   {{ error.firstName }}
@@ -99,11 +95,7 @@
                   id="lastName"
                   v-model="register.lastName"
                   placeholder="Enter your first name"
-                  v-bind:class="
-                    error.lastName
-                      ? 'ring ring-red-500 focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
-                      : 'focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
-                  "
+                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
                 <p class="text-center text-red-500 text-xs mt-2">
                   {{ error.lastName }}
@@ -118,11 +110,7 @@
                   id="email"
                   v-model="register.email"
                   placeholder="Enter your email"
-                  v-bind:class="
-                    error.email
-                      ? 'ring ring-red-500 focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
-                      : 'focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
-                  "
+                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                 />
                 <p class="text-center text-red-500 text-xs mt-2">
                   {{ error.email }}
@@ -139,11 +127,7 @@
                     id="password"
                     v-model="register.password"
                     placeholder="Enter your password"
-                    v-bind:class="
-                      error.password
-                        ? 'ring ring-red-500 focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
-                        : 'focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg'
-                    "
+                    class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
                   />
                 </div>
 
@@ -224,6 +208,11 @@ export default {
     }
   },
   methods: {
+    validateEmailAddresss(email) {
+      const EMAIL_REGEX =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ //eslint-disable-line
+      return EMAIL_REGEX.test(email)
+    },
     submit() {
       this.$root.$emit('next')
       if (this.register.firstName === '') {
@@ -247,8 +236,25 @@ export default {
         }, 1000)
         this.loading = false
         this.$store.commit('enableNext', false)
+      } else if (!this.validateEmailAddresss(this.register.email)) {
+        this.error.email = 'Please enter a valid email'
+        setTimeout(() => {
+          this.error.email = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
       } else if (this.register.password === '') {
         this.error.password = 'password is required'
+        setTimeout(() => {
+          this.error.password = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else if (
+        this.register.password.length <= 6 ||
+        this.register.password.length > 19
+      ) {
+        this.error.password = 'The password must be between 7 and 20 characters'
         setTimeout(() => {
           this.error.password = ''
         }, 1000)

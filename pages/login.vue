@@ -139,7 +139,12 @@ export default {
     }),
   },
   methods: {
-    ...mapActions(['postLogin']),
+    ...mapActions(['postLogin', 'signOut']),
+    validateEmailAddresss(email) {
+      const EMAIL_REGEX =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ //eslint-disable-line
+      return EMAIL_REGEX.test(email)
+    },
     async submit() {
       this.loading = true
       if (this.login.email === '') {
@@ -148,8 +153,23 @@ export default {
           this.error.email = ''
         }, 1000)
         this.loading = false
+      } else if (!this.validateEmailAddresss(this.login.email)) {
+        this.error.email = 'Please enter a valid email'
+        setTimeout(() => {
+          this.error.email = ''
+        }, 1000)
+        this.loading = false
       } else if (this.login.password === '') {
         this.error.password = 'password is required'
+        setTimeout(() => {
+          this.error.password = ''
+        }, 1000)
+        this.loading = false
+      } else if (
+        this.login.password.length <= 6 ||
+        this.login.password.length > 19
+      ) {
+        this.error.password = 'The password must be between 7 and 20 characters'
         setTimeout(() => {
           this.error.password = ''
         }, 1000)
@@ -171,6 +191,9 @@ export default {
         }
       }
     },
+  },
+  mounted() {
+    this.signOut()
   },
 }
 </script>

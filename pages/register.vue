@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import EducationExprience from '@/components/Registration/EducationExprience'
 import Profile from '@/components/Registration/Profile'
 import CompleteProfile from '@/components/Registration/CompleteProfile'
@@ -42,6 +42,9 @@ export default {
       enableNext: 'next',
     }),
   },
+  methods: {
+    ...mapActions(['signOut']),
+  },
   mounted() {
     this.$root.$on('next', () => {
       if (this.enableNext) {
@@ -50,7 +53,7 @@ export default {
     })
   },
   created() {
-    // console.log(this.enableNext)
+    this.signOut()
   },
 }
 </script>

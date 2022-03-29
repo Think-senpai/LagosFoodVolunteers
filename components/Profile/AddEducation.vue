@@ -1,5 +1,5 @@
 <template>
-  <modal name="add-education-modal">
+  <modal name="add-education-modal" width="500" height="500">
     <div class="flex flex-col px-6 py-6">
       <h3 class="font-medium text-black">Add Education</h3>
       <div class="w-full mt-6">
@@ -12,6 +12,9 @@
             placeholder="Enter school"
             class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
           />
+          <p class="text-center text-red-500 text-xs mt-2">
+            {{ error.school }}
+          </p>
         </div>
         <div class="mb-4">
           <label>Program</label>
@@ -22,12 +25,15 @@
             placeholder="Enter program of study"
             class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
           />
+          <p class="text-center text-red-500 text-xs mt-2">
+            {{ error.program }}
+          </p>
         </div>
         <div class="mb-4">
           <label>Start</label>
           <date-picker
             placeholder="Start"
-            format="MM/dd/yyyy"
+            :format="customData"
             class="border focus:bg-white focus:outline-none py-2 px-4 shadow-sm mt-2 w-full rounded-lg"
             input-class="border-0 w-full focus:outline-none"
           />
@@ -36,11 +42,14 @@
           <label>End</label>
           <date-picker
             placeholder="End"
-            format="MM/dd/yyyy"
+            :format="customData"
             class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
             input-class="border-0 w-full focus:outline-none"
           />
         </div>
+        <p class="text-center text-red-500 text-xs mt-2">
+          {{ error.date }}
+        </p>
       </div>
       <div class="flex items-end justify-end">
         <button
@@ -64,11 +73,16 @@ export default {
       program: '',
       start: '',
       end: '',
+      error: {
+        school: '',
+        program: '',
+        date: '',
+      },
     }
   },
   props: {
     educations: {
-      type: Object,
+      type: Array,
       required: true,
     },
   },
@@ -78,22 +92,38 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['updateEducation', 'getCurrentProfile']),
+    ...mapActions(['addEducation', 'getCurrentProfile']),
     customData(date) {
       return moment(date).format('MMMM Do YYYY')
     },
     async save() {
-      this.listEducation.push({
-        school: this.school,
-        program: this.program,
-        start: this.start,
-        end: this.end,
-      })
-      const payload = { educations: this.listEducation }
-      this.$store.commit('educationInfo', payload)
-      await this.updateEducation()
-      this.$modal.hide('add-education-modal')
-      await this.getCurrentProfile()
+      if (this.school === '') {
+        this.error.school = 'school name is required'
+        setTimeout(() => {
+          this.error.school = ''
+        }, 1000)
+      } else if (this.program === '') {
+        this.error.program = 'program name is required'
+        setTimeout(() => {
+          this.error.program = ''
+        }, 1000)
+      } else if (this.start === '' || this.end === '') {
+        this.error.date = 'Date is required'
+        setTimeout(() => {
+          this.error.date = ''
+        }, 1000)
+      } else {
+        const payload = {
+          school: this.school,
+          program: this.program,
+          start: this.start,
+          end: this.end,
+        }
+        this.$store.commit('educationInfo', { educations: this.listEducation })
+        await this.addEducation(payload)
+        this.$modal.hide('add-education-modal')
+        await this.getCurrentProfile()
+      }
     },
   },
   mounted() {

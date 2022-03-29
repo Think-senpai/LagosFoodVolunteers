@@ -2,6 +2,8 @@ import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import db from '@/plugins/firebase.client.js'
 
+export const strict = false
+
 export const state = () => ({
   next: false,
   profile: [],
@@ -36,7 +38,7 @@ export const mutations = {
     state.errorMsg = payload
   },
   currentProfile: (state, payload) => {
-    state.currentProfile = payload
+    state.currentProfile = JSON.parse(JSON.stringify(payload))
   },
 }
 export const actions = {
@@ -110,7 +112,20 @@ export const actions = {
         commit('errorMsg', errorMessage)
       })
   },
-  async getCurrentProfile({ commit }, user) {
+  async signOut() {
+    await firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        console.log('Sign-out successful.')
+        localStorage.removeItem('profile')
+      })
+      .catch((error) => {
+        // An error happened.
+        console.log(error)
+      })
+  },
+  async getCurrentProfile({ commit }) {
     const dataBase = await db
       .collection('volunteers')
       .doc(firebase.auth().currentUser.uid)
@@ -129,9 +144,9 @@ export const actions = {
         console.log('Error getting data:', error)
       })
   },
-  async updateExperience({ getters }) {
-    // console.log(experiences)
+  async addExperience({ getters, dispatch }, payload) {
     const { experiences } = getters.educationInfo
+    experiences.push(payload)
     console.log(experiences)
     const dataBase = await db
       .collection('volunteers')
@@ -142,12 +157,63 @@ export const actions = {
         experiences: experiences,
       })
       .then((doc) => {
+        dispatch('getCurrentProfile')
         // console.log('data:', doc.data())
       })
   },
-  async updateEducation({ getters }) {
+  async updateExperience({ getters, dispatch }, data) {
+    const { experiences } = getters.educationInfo
+    // console.log(experiences.findIndex(data.index))
+    const index = data.index
+    const payload = {
+      role: data.role,
+      company: data.company,
+      period: data.period,
+      start: data.start,
+      end: data.end,
+      desc: data.desc,
+    }
+    experiences.splice(index, 1, payload)
+    const dataBase = await db
+      .collection('volunteers')
+      .doc(firebase.auth().currentUser.uid)
+
+    dataBase
+      .update({
+        experiences: experiences,
+      })
+      .then((doc) => {
+        dispatch('getCurrentProfile')
+        // console.log('data:', doc.data())
+      })
+  },
+  async deleteExperience({ getters, dispatch }, index) {
+    console.log(index)
+    const { experiences } = getters.educationInfo
+    if (index > 0) {
+      experiences.splice(index, 1)
+    } else {
+      experiences.shift()
+    }
     // console.log(experiences)
+    const dataBase = await db
+      .collection('volunteers')
+      .doc(firebase.auth().currentUser.uid)
+
+    dataBase
+      .update({
+        experiences: experiences,
+      })
+      .then((doc) => {
+        dispatch('getCurrentProfile')
+        // console.log('data:', doc.data())
+      })
+  },
+
+  async addEducation({ getters, dispatch }, payload) {
     const { educations } = getters.educationInfo
+    console.log(educations)
+    educations.push(payload)
     const dataBase = await db
       .collection('volunteers')
       .doc(firebase.auth().currentUser.uid)
@@ -157,7 +223,84 @@ export const actions = {
         educations: educations,
       })
       .then((doc) => {
+        dispatch('getCurrentProfile')
         // console.log('data:', doc.data())
+      })
+  },
+
+  async updateEducation({ getters, dispatch }, data) {
+    const { educations } = getters.educationInfo
+    // console.log(experiences.findIndex(data.index))
+    const index = data.index
+    const payload = {
+      school: data.school,
+      program: data.program,
+      start: data.start,
+      end: data.end,
+    }
+    educations.splice(index, 1, payload)
+    const dataBase = await db
+      .collection('volunteers')
+      .doc(firebase.auth().currentUser.uid)
+
+    dataBase
+      .update({
+        educations: educations,
+      })
+      .then((doc) => {
+        dispatch('getCurrentProfile')
+      })
+  },
+
+  async deleteEducation({ getters, dispatch }, index) {
+    const { educations } = getters.educationInfo
+    if (index > 0) {
+      educations.splice(index, 1)
+    } else {
+      educations.shift()
+    }
+
+    const dataBase = await db
+      .collection('volunteers')
+      .doc(firebase.auth().currentUser.uid)
+
+    dataBase
+      .update({
+        educations: educations,
+      })
+      .then((doc) => {
+        dispatch('getCurrentProfile')
+        // console.log('data:', doc.data())
+      })
+  },
+  async updateAbouts({ dispatch }, data) {
+    console.log(data)
+    const dataBase = await db
+      .collection('volunteers')
+      .doc(firebase.auth().currentUser.uid)
+
+    dataBase
+      .update({
+        about: data.about,
+      })
+      .then((doc) => {
+        dispatch('getCurrentProfile')
+      })
+  },
+  async updateProfileDetail({ dispatch }, data) {
+    const dataBase = await db
+      .collection('volunteers')
+      .doc(firebase.auth().currentUser.uid)
+
+    dataBase
+      .update({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        title: data.title,
+        image: data.image,
+      })
+      .then((doc) => {
+        dispatch('getCurrentProfile')
       })
   },
 }
@@ -175,7 +318,7 @@ export const getters = {
     return state.contactInfo
   },
   educationInfo(state) {
-    return state.educationInfo
+    return JSON.parse(JSON.stringify(state.educationInfo))
   },
   userId(state) {
     return state.userId
