@@ -1,6 +1,6 @@
 <template>
   <div>
-    <modal name="edit-education-modal">
+    <modal name="edit-education-modal" width="500" height="500">
       <div class="flex flex-col px-12 py-6">
         <h3 class="font-medium text-black mb-4">Education</h3>
         <div
@@ -132,7 +132,7 @@ export default {
   },
   props: {
     editableProfile: {
-      type: Array,
+      type: Object,
       required: false,
     },
   },

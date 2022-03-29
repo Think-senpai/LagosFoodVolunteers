@@ -1,5 +1,5 @@
 <template>
-  <modal name="update-experience-modal">
+  <modal name="update-experience-modal" width="500" height="500">
     <div class="flex flex-col px-6 py-6">
       <h3 class="font-medium text-black">Edit Experience</h3>
       <div class="w-full mt-6">

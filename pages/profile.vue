@@ -30,7 +30,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="cursor-pointer">
+                <div class="cursor-pointer" @click="toggleProfileModal()">
                   <img
                     :src="require('@/assets/icon/edit.svg')"
                     class=""
@@ -350,6 +350,7 @@
       <edit-Education :editableProfile="editableProfile" />
       <edit-Experience :editableProfile="editableProfile" />
       <about-About :about="about" />
+      <update-profile :profile="profile" :image="image" />
     </div>
   </div>
 </template>
@@ -363,6 +364,7 @@ import AddExperience from '@/components/Profile/AddExperience'
 import EditEducation from '@/components/Profile/EditEducation'
 import EditExperience from '@/components/Profile/EditExperience'
 import UpdateAbout from '@/components/Profile/UpdateAbout'
+import UpdateProfile from '@/components/Profile/UpdateProfile'
 import Spinner from '@/components/Spinner'
 export default {
   layout: 'profile',
@@ -373,7 +375,9 @@ export default {
       editableProfile: {},
       experiences: [],
       educations: [],
-      about: '',
+      about: {},
+      profile: [],
+      image: '',
     }
   },
   components: {
@@ -382,6 +386,7 @@ export default {
     'edit-Education': EditEducation,
     'edit-Experience': EditExperience,
     'about-About': UpdateAbout,
+    'update-profile': UpdateProfile,
     Spinner,
   },
   methods: {
@@ -402,9 +407,14 @@ export default {
       this.$root.$emit('editExperience')
     },
     toggleupdateAboutModal() {
-      this.about = this.currentProfile.about
-      // console.log(this.about)
+      this.about = this.currentProfile
       this.$root.$emit('updateAbout')
+    },
+    toggleProfileModal() {
+      this.profile = this.currentProfile
+      this.image = this.generatedImage
+      console.log(this.image)
+      this.$root.$emit('updateProfile')
     },
     generateName() {
       const date = new Date().valueOf()
@@ -479,7 +489,6 @@ export default {
 .vm--container .vm--modal {
   border-radius: 18px !important;
   top: 80px !important;
-  height: 480px !important;
   overflow-y: scroll !important;
 }
 @media screen and (max-width: 600px) {

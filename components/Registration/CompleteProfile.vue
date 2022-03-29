@@ -1,5 +1,8 @@
 <template>
-  <div class="items-center xl:items-start justify-center xl:justify-start">
+  <div
+    class="items-center xl:items-start justify-center xl:justify-start"
+    ref="toggle"
+  >
     <div class="pt-4 w-full lg:w-1/2 md:px-10 flex items-center">
       <div class="max-w-lg mx-auto w-11/12 mb-6">
         <h1 class="text-xl md:text-3xl font-bold text-gray-800 mt-4">
@@ -100,6 +103,9 @@
               cols="20"
               rows="5"
             ></textarea>
+            <p class="text-center text-red-500 text-xs mt-2">
+              {{ error.about }}
+            </p>
           </div>
 
           <div class="">
@@ -111,6 +117,9 @@
               type="text"
               placeholder="Product Designer"
             />
+            <p class="text-center text-red-500 text-xs mt-2">
+              {{ error.title }}
+            </p>
           </div>
 
           <div class="">
@@ -130,17 +139,40 @@
                   >x</span
                 >
               </div>
-              <input
-                id="title"
-                v-model="tagvalue"
-                class="peer focus:outline-none flex-grow"
-                type="text"
-                placeholder="Product Designer"
-                @keydown.enter.prevent="addTagValue"
-              />
+              <div class="relative">
+                <input
+                  id="title"
+                  v-model="tagvalue"
+                  class="peer focus:outline-none flex-grow"
+                  type="text"
+                  placeholder="Product Designer"
+                  @input="onChange"
+                  @keydown.down="onArrowDown"
+                  @keydown.up="onArrowUp"
+                  @keydown.enter="onEnter"
+                />
+                <ul
+                  class="autocomplete-results border w-full border-gray-200 bg-gray-100 cursor-pointer absolute p-0 m-0"
+                  v-show="isOpen"
+                >
+                  <li
+                    class="px-5"
+                    :class="{ 'bg-brand-acccentLight': i === arrowCounter }"
+                    v-for="(result, i) in results"
+                    :key="i"
+                    @click="addTagValue(result)"
+                  >
+                    {{ result }}
+                  </li>
+                </ul>
+              </div>
+              <!--<search-auto-complete :model="tagvalue" :skills="skills" />-->
             </div>
 
-            <small>*Main skills first then additional skills</small>
+            <small>*Main skills first then additional skills </small>
+            <p class="text-center text-red-500 text-xs mt-2">
+              {{ error.tags }}
+            </p>
           </div>
           <div>
             <label for="shirt">T-Shirt size: </label>
@@ -155,6 +187,9 @@
               <option value="l">Large</option>
               <option value="xl">X Large</option>
             </select>
+            <p class="text-center text-red-500 text-xs mt-2">
+              {{ error.size }}
+            </p>
           </div>
           <div>
             <button
@@ -191,13 +226,29 @@ export default {
         about: '',
         title: '',
         size: '',
-        tags: ['designer'],
+        tags: '',
       },
       image: '',
       showcrop: false,
       showprofile: true,
       image2: '',
       tagvalue: '',
+      skills: [
+        'Design',
+        'Coding',
+        'Wordpress',
+        'software development',
+        'Research',
+        'UI/UX',
+        'Frontend-development',
+        'Backend-development',
+        'Product designer',
+        'UX Engineer',
+        'Researcher',
+      ],
+      results: [],
+      isOpen: false,
+      arrowCounter: -1,
     }
   },
   methods: {
@@ -236,10 +287,44 @@ export default {
         this.showprofile = true
       })
     },
-    addTagValue() {
+    filterResults() {
+      this.results = this.skills.filter(
+        (skill) =>
+          skill.toLowerCase().includes(this.tagvalue.toLowerCase()) > -1
+      )
+    },
+    onChange() {
+      this.filterResults()
+      this.isOpen = true
+    },
+    onArrowDown() {
+      if (this.arrowCounter < this.results.length) {
+        this.arrowCounter = this.arrowCounter + 1
+      }
+    },
+    onArrowUp() {
+      if (this.arrowCounter > 0) {
+        this.arrowCounter = this.arrowCounter - 1
+      }
+    },
+    onEnter() {
+      this.tagvalue = this.results[this.arrowCounter]
+      this.arrowCounter = -1
+      this.isOpen = false
+    },
+    handleClickOutside(event) {
+      if (!this.$refs.toggle.contains(event.target)) {
+        this.isOpen = false
+      }
+    },
+    addTagValue(result) {
+      this.tagvalue = result
+      console.log(this.tagvalue)
+      console.log(this.tagvalue)
       if (this.tagvalue !== '') {
         this.register.tags.push(this.tagvalue)
       }
+      this.isOpen = false
       this.tagvalue = ''
     },
     removeTagValue(index) {
@@ -258,24 +343,21 @@ export default {
         }, 1000)
         this.loading = false
         this.$store.commit('enableNext', false)
-      }
-      if (this.register.title === '') {
+      } else if (this.register.title === '') {
         this.error.title = 'Title is required'
         setTimeout(() => {
           this.error.title = ''
         }, 1000)
         this.loading = false
         this.$store.commit('enableNext', false)
-      }
-      if (this.register.tags === ['']) {
+      } else if (this.register.tags.length === 0) {
         this.error.tags = 'Skills is required'
         setTimeout(() => {
           this.error.tags = ''
         }, 1000)
         this.loading = false
         this.$store.commit('enableNext', false)
-      }
-      if (this.register.size === ['']) {
+      } else if (this.register.size === '') {
         this.error.size = 'Size is required'
         setTimeout(() => {
           this.error.size = ''
@@ -284,7 +366,6 @@ export default {
         this.$store.commit('enableNext', false)
       } else {
         this.$store.commit('enableNext', true)
-
         const payload = {
           about: this.register.about,
           title: this.register.title,
@@ -295,6 +376,12 @@ export default {
         this.$store.commit('completeProfile', payload)
       }
     },
+  },
+  mounted() {
+    document.addEventListener('click', this.handleClickOutside)
+  },
+  destroyed() {
+    document.removeEventListener('click', this.handleClickOutside)
   },
   created() {
     this.$store.commit('enableNext', false)

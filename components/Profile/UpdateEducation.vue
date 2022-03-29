@@ -1,5 +1,5 @@
 <template>
-  <modal name="update-education-modal">
+  <modal name="update-education-modal" width="500" height="500">
     <div class="flex flex-col px-6 py-6">
       <h3 class="font-medium text-black">Add Education</h3>
       <div class="w-full mt-6">

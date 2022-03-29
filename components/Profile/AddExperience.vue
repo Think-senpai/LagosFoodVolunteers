@@ -1,5 +1,5 @@
 <template>
-  <modal name="add-experience-modal">
+  <modal name="add-experience-modal" width="500" height="500">
     <div class="flex flex-col px-6 py-6">
       <h3 class="font-medium text-black">Add Experience</h3>
       <div class="w-full mt-6">
@@ -12,6 +12,9 @@
             placeholder="Example: Product designer"
             class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
           />
+          <p class="text-center text-red-500 text-xs mt-2">
+            {{ error.role }}
+          </p>
         </div>
         <div class="mb-4">
           <label>Company Name</label>
@@ -22,6 +25,9 @@
             placeholder="Company Name"
             class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
           />
+          <p class="text-center text-red-500 text-xs mt-2">
+            {{ error.company }}
+          </p>
         </div>
         <!--<div class="mb-4">
           <label>Location</label>
@@ -45,6 +51,9 @@
             <option value="full-time">Full Time</option>
             <option value="part-time">Part Time</option>
           </select>
+          <p class="text-center text-red-500 text-xs mt-2">
+            {{ error.period }}
+          </p>
         </div>
         <div class="mb-4">
           <label>Description</label>
@@ -57,6 +66,9 @@
             cols="20"
             rows="5"
           ></textarea>
+          <p class="text-center text-red-500 text-xs mt-2">
+            {{ error.desc }}
+          </p>
         </div>
         <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4 w-full">
           <date-picker
@@ -73,6 +85,9 @@
             class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
             input-class="border-0 w-full focus:outline-none"
           />
+          <p class="text-center text-red-500 text-xs mt-2">
+            {{ error.date }}
+          </p>
         </div>
       </div>
       <div class="flex items-end justify-end">
@@ -99,6 +114,13 @@ export default {
       start: '',
       end: '',
       desc: '',
+      error: {
+        role: '',
+        company: '',
+        period: '',
+        date: '',
+        desc: '',
+      },
     }
   },
   props: {
@@ -118,26 +140,47 @@ export default {
       return moment(date).format('MMMM Do YYYY')
     },
     async save() {
-      /* this.listExperiences.push({
-        role: this.role,
-        company: this.company,
-        period: this.period,
-        start: this.start,
-        end: this.end,
-        desc: this.desc,
-      }) */
-      const payload = {
-        role: this.role,
-        company: this.company,
-        period: this.period,
-        start: this.start,
-        end: this.end,
-        desc: this.desc,
+      if (this.role === '') {
+        this.error.role = 'Job title is required'
+        setTimeout(() => {
+          this.error.role = ''
+        }, 1000)
+      } else if (this.company === '') {
+        this.error.company = 'Company name is required'
+        setTimeout(() => {
+          this.error.company = ''
+        }, 1000)
+      } else if (this.period === '') {
+        this.error.period = 'Employment type is required'
+        setTimeout(() => {
+          this.error.period = ''
+        }, 1000)
+      } else if (this.desc === '') {
+        this.error.desc = 'Job description is required'
+        setTimeout(() => {
+          this.error.date = ''
+        }, 1000)
+      } else if (this.start === '' || this.end === '') {
+        this.error.date = 'Date is required'
+        setTimeout(() => {
+          this.error.date = ''
+        }, 1000)
+      } else {
+        const payload = {
+          role: this.role,
+          company: this.company,
+          period: this.period,
+          start: this.start,
+          end: this.end,
+          desc: this.desc,
+        }
+        this.$store.commit('educationInfo', {
+          experiences: this.listExperiences,
+        })
+        await this.addExperience(payload)
+        this.$modal.hide('add-experience-modal')
+        await this.getCurrentProfile()
       }
-      this.$store.commit('educationInfo', { experiences: this.listExperiences })
-      await this.addExperience(payload)
-      this.$modal.hide('add-experience-modal')
-      await this.getCurrentProfile()
     },
   },
   mounted() {

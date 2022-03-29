@@ -110,6 +110,9 @@
               </div>
               <p class="ml-3 mt-3">Add educational qualification</p>
             </div>
+            <p class="text-center text-red-500 text-xs mt-2">
+              {{ error.educations }}
+            </p>
           </div>
           <div>
             <label for="education">Experience</label><br />
@@ -195,6 +198,9 @@
               </div>
               <p class="ml-3 mt-3">Add another experience</p>
             </div>
+            <p class="text-center text-red-500 text-xs mt-2">
+              {{ error.experiences }}
+            </p>
             <div class="flex items-center justify-center mt-4">
               <div
                 class="text-left text-opacity-5 border p-2 rounded-md flex items-center justify-center cursor-pointer mt-4"
@@ -264,6 +270,10 @@ export default {
           desc: '',
         },
       ],
+      error: {
+        educations: '',
+        experiences: '',
+      },
       pledge: false,
     }
   },
@@ -300,19 +310,97 @@ export default {
     },
     ...mapActions(['postRegister']),
     async submit() {
-      this.loading = true
-      // console.log(this.experiences)
-      const payload = {
-        educations: this.educations,
-        experiences: this.experiences,
-      }
-      this.$store.commit('educationInfo', payload)
-      await this.postRegister()
-      if (this.userId) {
-        this.$root.$emit('next')
-        this.loading = false
+      for (
+        let i = 0;
+        i < this.educations.length && i < this.experiences.length;
+        i++
+      ) {
+        if (this.educations[i].school === '') {
+          this.error.educations = 'school name is required'
+          console.log('school name is required')
+          setTimeout(() => {
+            this.error.educations = ''
+          }, 1000)
+          this.loading = false
+          this.$store.commit('enableNext', false)
+        } else if (this.educations[i].program === '') {
+          this.error.educations = 'program name is required'
+          setTimeout(() => {
+            this.error.educations = ''
+          }, 1000)
+          this.loading = false
+          this.$store.commit('enableNext', false)
+        } else if (
+          this.educations[i].start === '' ||
+          this.educations[i].end === ''
+        ) {
+          this.error.educations = 'Date is required'
+          setTimeout(() => {
+            this.error.educations = ''
+          }, 1000)
+          this.loading = false
+          this.$store.commit('enableNext', false)
+        } else if (this.experiences[i].role === '') {
+          this.error.experiences = 'Job title is required'
+          setTimeout(() => {
+            this.error.experiences = ''
+          }, 1000)
+          this.loading = false
+          this.$store.commit('enableNext', false)
+        } else if (this.experiences[i].company === '') {
+          this.error.experiences = 'Company name is required'
+          setTimeout(() => {
+            this.error.experiences = ''
+          }, 1000)
+          this.loading = false
+          this.$store.commit('enableNext', false)
+        } else if (this.experiences[i].period === '') {
+          this.error.experiences = 'Employment type is required'
+          setTimeout(() => {
+            this.error.experiences = ''
+          }, 1000)
+          this.loading = false
+          this.$store.commit('enableNext', false)
+        } else if (
+          this.experiences[i].start === '' ||
+          this.experiences[i].end === ''
+        ) {
+          this.error.experiences = 'Date is required'
+          setTimeout(() => {
+            this.error.experiences = ''
+          }, 1000)
+          this.loading = false
+          this.$store.commit('enableNext', false)
+        } else if (this.experiences[i].desc === '') {
+          this.error.experiences = 'Job description is required'
+          setTimeout(() => {
+            this.error.experiences = ''
+          }, 1000)
+          this.loading = false
+          this.$store.commit('enableNext', false)
+        } else if (!this.pledge) {
+          console.log('pledge')
+          this.loading = false
+          this.$store.commit('enableNext', false)
+        } else {
+          this.loading = true
+          const payload = {
+            educations: this.educations,
+            experiences: this.experiences,
+          }
+          this.$store.commit('educationInfo', payload)
+          await this.postRegister()
+          if (this.userId) {
+            this.$root.$emit('next')
+            this.$store.commit('enableNext', true)
+            this.loading = false
+          }
+        }
       }
     },
+  },
+  created() {
+    this.$store.commit('enableNext', false)
   },
 }
 </script>

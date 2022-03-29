@@ -273,6 +273,36 @@ export const actions = {
         // console.log('data:', doc.data())
       })
   },
+  async updateAbouts({ dispatch }, data) {
+    console.log(data)
+    const dataBase = await db
+      .collection('volunteers')
+      .doc(firebase.auth().currentUser.uid)
+
+    dataBase
+      .update({
+        about: data.about,
+      })
+      .then((doc) => {
+        dispatch('getCurrentProfile')
+      })
+  },
+  async updateProfileDetail({ dispatch }, data) {
+    const dataBase = await db
+      .collection('volunteers')
+      .doc(firebase.auth().currentUser.uid)
+
+    dataBase
+      .update({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        title: data.title,
+        image: data.image,
+      })
+      .then((doc) => {
+        dispatch('getCurrentProfile')
+      })
+  },
 }
 export const getters = {
   next(state) {
