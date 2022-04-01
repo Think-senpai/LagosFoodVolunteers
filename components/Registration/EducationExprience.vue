@@ -227,7 +227,10 @@
               class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-4"
               @click.prevent="submit"
             >
-              Continue
+              <div class="flex justify-center items-center" v-if="loading">
+                <Spinner />
+              </div>
+              <div v-else>Continue</div>
             </button>
           </div>
           <p>{{ errorMsg && errorMsg.slice(10) }}</p>
@@ -247,8 +250,12 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
+import Spinner from '@/components/Spinner'
 export default {
   name: 'EducationExprience',
+  component: {
+    Spinner,
+  },
   data() {
     return {
       loading: false,
@@ -315,9 +322,9 @@ export default {
         i < this.educations.length && i < this.experiences.length;
         i++
       ) {
+        this.loading = true
         if (this.educations[i].school === '') {
           this.error.educations = 'school name is required'
-          console.log('school name is required')
           setTimeout(() => {
             this.error.educations = ''
           }, 1000)
@@ -379,7 +386,6 @@ export default {
           this.loading = false
           this.$store.commit('enableNext', false)
         } else if (!this.pledge) {
-          console.log('pledge')
           this.loading = false
           this.$store.commit('enableNext', false)
         } else {
@@ -391,9 +397,11 @@ export default {
           this.$store.commit('educationInfo', payload)
           await this.postRegister()
           if (this.userId) {
-            this.$root.$emit('next')
             this.$store.commit('enableNext', true)
-            this.loading = false
+            setTimeout(() => {
+              this.$root.$emit('next')
+              this.loading = false
+            }, 1000)
           }
         }
       }

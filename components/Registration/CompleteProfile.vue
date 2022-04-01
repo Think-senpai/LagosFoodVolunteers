@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="items-center xl:items-start justify-center xl:justify-start"
-    ref="toggle"
-  >
+  <div class="items-center xl:items-start justify-center xl:justify-start">
     <div class="pt-4 w-full lg:w-1/2 md:px-10 flex items-center">
       <div class="max-w-lg mx-auto w-11/12 mb-6">
         <h1 class="text-xl md:text-3xl font-bold text-gray-800 mt-4">
@@ -52,7 +49,9 @@
             <label class="mb-4">Upload Profile picture</label>
             <img v-if="!image2" src="/profile.png" alt="" @click="upload" />
             <img v-else :src="image2" alt="" class="w-40 text-left" />
-
+            <p class="text-center text-red-500 text-xs mt-2">
+              {{ error.image }}
+            </p>
             <input
               id="input"
               ref="input"
@@ -154,6 +153,7 @@
                 <ul
                   class="autocomplete-results border w-full border-gray-200 bg-gray-100 cursor-pointer absolute p-0 m-0"
                   v-show="isOpen"
+                  ref="toggle"
                 >
                   <li
                     class="px-5"
@@ -196,7 +196,10 @@
               class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-6"
               @click.prevent="submit"
             >
-              Continue
+              <div class="flex justify-center items-center" v-if="loading">
+                <Spinner />
+              </div>
+              <div v-else>Continue</div>
             </button>
           </div>
         </form>
@@ -212,10 +215,15 @@
   </div>
 </template>
 <script>
+import Spinner from '@/components/Spinner'
 export default {
   name: 'CompleteProfile',
+  component: {
+    Spinner,
+  },
   data() {
     return {
+      loading: false,
       register: {
         about: '',
         title: '',
@@ -227,6 +235,7 @@ export default {
         title: '',
         size: '',
         tags: '',
+        image: '',
       },
       image: '',
       showcrop: false,
@@ -289,8 +298,8 @@ export default {
     },
     filterResults() {
       this.results = this.skills.filter(
-        (skill) =>
-          skill.toLowerCase().includes(this.tagvalue.toLowerCase()) > -1
+        // eslint-disable-next-line
+        (skill) => skill.toLowerCase().indexOf(this.tagvalue.toLowerCase()) > -1
       )
     },
     onChange() {
@@ -335,7 +344,7 @@ export default {
       }
     },
     submit() {
-      this.$root.$emit('next')
+      this.loading = true
       if (this.register.about === '') {
         this.error.about = 'About is required'
         setTimeout(() => {
@@ -364,8 +373,16 @@ export default {
         }, 1000)
         this.loading = false
         this.$store.commit('enableNext', false)
+      } else if (this.image2 === '') {
+        this.error.image = 'Image is required'
+        setTimeout(() => {
+          this.error.size = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
       } else {
         this.$store.commit('enableNext', true)
+
         const payload = {
           about: this.register.about,
           title: this.register.title,
@@ -374,6 +391,10 @@ export default {
           image: this.image2,
         }
         this.$store.commit('completeProfile', payload)
+        setTimeout(() => {
+          this.$root.$emit('next')
+          this.loading = false
+        }, 1000)
       }
     },
   },

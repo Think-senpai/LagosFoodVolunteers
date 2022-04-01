@@ -51,7 +51,7 @@ export const actions = {
     ) */
     const { email, password, firstName, lastName } = getters.profile
     const { about, title, tags, size, image } = getters.completeProfile
-    const { phone, address, country, region } = getters.contactInfo
+    const { phone, address, languages, country, region } = getters.contactInfo
     const { educations, experiences } = getters.educationInfo
     const firebaseAuth = await firebase.auth()
     await firebaseAuth
@@ -72,6 +72,7 @@ export const actions = {
             image: image,
             phone: phone,
             address: address,
+            languages: languages,
             country: country,
             region: region,
             educations: educations,
@@ -298,6 +299,19 @@ export const actions = {
         lastName: data.lastName,
         title: data.title,
         image: data.image,
+      })
+      .then((doc) => {
+        dispatch('getCurrentProfile')
+      })
+  },
+  async updateSkills({ dispatch }, data) {
+    const dataBase = await db
+      .collection('volunteers')
+      .doc(firebase.auth().currentUser.uid)
+
+    dataBase
+      .update({
+        tags: data.tags,
       })
       .then((doc) => {
         dispatch('getCurrentProfile')

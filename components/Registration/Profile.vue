@@ -141,7 +141,10 @@
               class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-6"
               @click.prevent="submit"
             >
-              Create Account
+              <div class="flex justify-center items-center" v-if="loading">
+                <Spinner />
+              </div>
+              <div v-else>Create Account</div>
             </button>
           </div>
           <p class="mt-4 text-center text-sm font-light text-gray-800">
@@ -187,8 +190,12 @@
 </template>
 
 <script>
+import Spinner from '@/components/Spinner'
 export default {
   name: 'Profile',
+  component: {
+    Spinner,
+  },
   data() {
     return {
       loading: false,
@@ -214,7 +221,7 @@ export default {
       return EMAIL_REGEX.test(email)
     },
     submit() {
-      this.$root.$emit('next')
+      this.loading = true
       if (this.register.firstName === '') {
         this.error.firstName = 'firstname is required'
         setTimeout(() => {
@@ -262,7 +269,6 @@ export default {
         this.$store.commit('enableNext', false)
       } else {
         this.$store.commit('enableNext', true)
-
         const payload = {
           firstName: this.register.firstName,
           lastName: this.register.lastName,
@@ -270,6 +276,10 @@ export default {
           password: this.register.password,
         }
         this.$store.commit('profile', payload)
+        setTimeout(() => {
+          this.loading = false
+          this.$root.$emit('next')
+        }, 1000)
       }
     },
   },
