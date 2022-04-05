@@ -13,6 +13,8 @@ export const state = () => ({
   userId: '',
   errorMsg: '',
   currentProfile: [],
+  dataBase: [],
+  skills: [],
 })
 
 export const mutations = {
@@ -39,6 +41,12 @@ export const mutations = {
   },
   currentProfile: (state, payload) => {
     state.currentProfile = JSON.parse(JSON.stringify(payload))
+  },
+  dataBase: (state, payload) => {
+    state.dataBase = payload
+  },
+  skills: (state, payload) => {
+    state.skills = payload
   },
 }
 export const actions = {
@@ -126,6 +134,32 @@ export const actions = {
         console.log(error)
       })
   },
+  async getDatabase({ commit }) {
+    const snapshot = await firebase.firestore().collection('volunteers').get()
+    // console.log(snapshot.docs.map((doc) => doc.data()))
+    commit(
+      'dataBase',
+      snapshot.docs.map((doc) => doc.data())
+    )
+  },
+  async getSklls({ commit }) {
+    const snapshot = await firebase.firestore().collection('skills').get()
+    commit(
+      'skills',
+      snapshot.docs.map((doc) => doc.data())
+    )
+  },
+  async addSkills({ dispatch }, data) {
+    await firebase
+      .firestore()
+      .collection('skills')
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          doc.ref.update({ skills: data.skills })
+        })
+      })
+  },
   async getCurrentProfile({ commit }) {
     const dataBase = await db
       .collection('volunteers')
@@ -134,7 +168,7 @@ export const actions = {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          // console.log('data:', doc.data())
+          console.log('data:', doc.data())
           commit('currentProfile', doc.data())
           localStorage.setItem('profile', JSON.stringify(doc.data()))
         } else {
@@ -148,7 +182,6 @@ export const actions = {
   async addExperience({ getters, dispatch }, payload) {
     const { experiences } = getters.educationInfo
     experiences.push(payload)
-    console.log(experiences)
     const dataBase = await db
       .collection('volunteers')
       .doc(firebase.auth().currentUser.uid)
@@ -213,7 +246,6 @@ export const actions = {
 
   async addEducation({ getters, dispatch }, payload) {
     const { educations } = getters.educationInfo
-    console.log(educations)
     educations.push(payload)
     const dataBase = await db
       .collection('volunteers')
@@ -342,5 +374,11 @@ export const getters = {
   },
   currentProfile(state) {
     return state.currentProfile
+  },
+  dataBase(state) {
+    return state.dataBase
+  },
+  skills(state) {
+    return state.skills
   },
 }

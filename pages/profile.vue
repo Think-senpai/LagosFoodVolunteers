@@ -15,7 +15,10 @@
                 <div class="flex flex-row">
                   <div class="mr-3">
                     <img
-                      :src="generatedImage"
+                      :src="
+                        currentProfile.image &&
+                        generateImage(currentProfile.image)
+                      "
                       class="rounded-full w-16"
                       alt=""
                     />
@@ -385,8 +388,8 @@ export default {
   data() {
     return {
       loading: false,
-      generatedImage: '',
       editableProfile: {},
+      generatedImage: '',
       experiences: [],
       educations: [],
       about: {},
@@ -428,7 +431,10 @@ export default {
     },
     toggleProfileModal() {
       this.profile = this.currentProfile
-      this.image = this.generatedImage
+      this.image =
+        this.currentProfile.image &&
+        this.generateImage(this.currentProfile.image)
+      console.log('this.image', this.generatedImage)
       this.$root.$emit('updateProfile')
     },
     toggleUpdateSkill() {
@@ -447,6 +453,38 @@ export default {
         )
       }
       return date + '.' + text + '.jpeg'
+    },
+    generateImage(image) {
+      console.log(image)
+      const arr = image && image.split(',')
+      const bstr = atob(arr[1])
+      let n = bstr.length
+      const u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+      }
+      const imageName = this.generateName()
+      const blob = new Blob([u8arr], { type: 'image/jpeg' })
+      const imageFile = new File([blob], imageName, {
+        type: 'image/jpeg',
+      })
+      console.log(window.URL.createObjectURL(imageFile))
+      return window.URL.createObjectURL(imageFile)
+    },
+    async loadUser() {
+      this.loading = true
+      await firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          this.$store.dispatch('getCurrentProfile')
+        } else {
+          this.$router.push('/login')
+        }
+        if (this.currentProfile) {
+          this.loading = false
+          // this.generateImage(this.currentProfile.image)
+        }
+        console.log(this.currentProfile)
+      })
     },
   },
   computed: {
@@ -470,38 +508,8 @@ export default {
       }
     },
   },
-  async mounted() {
-    // window.location.reload()
-    this.loading = true
-    await firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.$store.dispatch('getCurrentProfile')
-        // console.log(user)
-        console.log(this.currentProfile)
-        // this.currentProfile = JSON.parse(localStorage.getItem('profile'))
-      } else {
-        this.$router.push('/login')
-      }
-      if (this.currentProfile) {
-        this.loading = false
-      }
-      console.log(this.currentProfile)
-      const arr = this.currentProfile && this.currentProfile.image.split(',')
-      const bstr = atob(arr[1])
-      let n = bstr.length
-      const u8arr = new Uint8Array(n)
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n)
-      }
-      const imageName = this.generateName()
-      const blob = new Blob([u8arr], { type: 'image/jpeg' })
-      const imageFile = new File([blob], imageName, {
-        type: 'image/jpeg',
-      })
-      // console.log(window.URL.createObjectURL(imageFile))
-      this.generatedImage = window.URL.createObjectURL(imageFile)
-      console.log('this.generatedImage', this.generatedImage)
-    })
+  created() {
+    this.loadUser()
   },
 }
 </script>

@@ -5,6 +5,9 @@
         <!--<div>
         <img src="/logo.png" alt="" style="width: 120px" />
       </div>-->
+        <div class="flex items-end justify-end sm:hidden">
+          <img class="w-24" src="@/assets/images/logo.png" alt="" />
+        </div>
         <h1 class="text-xl md:text-3xl font-bold text-gray-800 mt-4">
           Become a Voluteer
         </h1>
@@ -61,14 +64,14 @@
                 id="education"
                 v-model="education.school"
                 placeholder="Enter school"
-                class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                class="border focus:bg-white focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
               />
               <input
                 type="text"
                 id="education"
                 v-model="education.program"
                 placeholder="Enter program of study"
-                class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                class="border focus:bg-white focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
               />
               <div
                 class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4 w-full"
@@ -77,14 +80,14 @@
                   placeholder="Start"
                   :format="customData"
                   v-model="education.start"
-                  class="border focus:bg-white focus:outline-none py-2 px-4 shadow-sm mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none py-3 px-4 shadow-sm mt-2 w-full rounded-lg"
                   input-class="border-0 w-full focus:outline-none"
                 />
                 <date-picker
                   placeholder="End"
                   :format="customData"
                   v-model="education.end"
-                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
                   input-class="border-0 w-full focus:outline-none"
                 />
               </div>
@@ -127,23 +130,25 @@
                 id="experience"
                 v-model="experience.role"
                 placeholder="Enter job title"
-                class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                class="border focus:bg-white focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
               />
               <input
                 type="text"
                 id="experience"
                 v-model="experience.company"
                 placeholder="Enter comapny name"
-                class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                class="border focus:bg-white focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
               />
               <select
                 type="text"
                 id="experience"
+                label="Select employment type"
                 v-model="experience.period"
-                placeholder="Enter employment type"
-                class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                class="border focus:bg-white focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
               >
-                <option selected disabled>select employment type</option>
+                <option :value="''" disabled selected>
+                  select employment type
+                </option>
                 <option value="full-time">Full Time</option>
                 <option value="part-time">Part Time</option>
               </select>
@@ -154,14 +159,14 @@
                   placeholder="Start"
                   :format="customData"
                   v-model="experience.start"
-                  class="border focus:bg-white focus:outline-none py-2 px-4 shadow-sm mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none py-3 px-4 shadow-sm mt-2 w-full rounded-lg"
                   input-class="border-0 w-full focus:outline-none"
                 />
                 <date-picker
                   placeholder="End"
                   :format="customData"
                   v-model="experience.end"
-                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
                   input-class="border-0 w-full focus:outline-none"
                 />
               </div>
@@ -224,7 +229,7 @@
               <p class="ml-3 mt-3">I have read the community service pledge</p>
             </div>
             <button
-              class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-4"
+              class="btn bg-brand-primary text-white tracking-wide py-3 sm:py-4 w-full mt-4"
               @click.prevent="submit"
             >
               <div class="flex justify-center items-center" v-if="loading">
@@ -240,7 +245,7 @@
     <div class="w-1/2 hidden lg:block fixed right-0 top-0">
       <img
         class="object-cover h-screen w-full"
-        src="@/assets/images/LFBI-Volunteers.jpg"
+        src="@/assets/images/LFBI-Volunteers3.jpg"
         alt=""
       />
     </div>

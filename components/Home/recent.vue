@@ -20,7 +20,7 @@
             </div>
             <div class="flex w-10/12 sm:w-9/12 md:w-full flex-col">
               <div class="hidden md:flex mb-3">
-                <div v-for="(skill, idx) in recent.skills" :key="idx">
+                <div v-for="(skill, idx) in recent.tags" :key="idx">
                   <button
                     class="bg-brand-primaryLight p-2 flex items-center justify-between rounded-md mr-2 md:mr-6"
                   >
@@ -28,10 +28,10 @@
                   </button>
                 </div>
               </div>
-              <h3 class="font-medium mb-2 mx-2">{{ recent.name }}</h3>
-              <p class="text-gray-400 mb-6 mx-2">{{ recent.description }}</p>
+              <h3 class="font-medium mb-2 mx-2">{{ recent.firstName }}</h3>
+              <p class="text-gray-400 mb-6 mx-2">{{ recent.about }}</p>
               <div class="flex md:hidden mb-6">
-                <div v-for="(skill, idx) in recent.skills" :key="idx">
+                <div v-for="(skill, idx) in recent.tags" :key="idx">
                   <button
                     class="bg-brand-primaryLight p-2 flex items-center justify-between rounded-md mr-2 md:mr-6"
                   >
@@ -67,7 +67,7 @@
 export default {
   data() {
     return {
-      recents: [
+      /* recents: [
         {
           name: 'James Owai',
           description:
@@ -96,8 +96,50 @@ export default {
           skills: ['Designer', 'Developer', 'Researcher'],
           image: require('@/assets/images/shadare.png'),
         },
-      ],
+      ], */
     }
+  },
+  props: {
+    dataBase: {
+      type: Array,
+      required: false,
+    },
+  },
+  computed: {
+    recents: function () {
+      return this.dataBase
+    },
+  },
+  methods: {
+    generateName() {
+      const date = new Date().valueOf()
+      let text = ''
+      const possibleText =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+      for (let i = 0; i < 5; i++) {
+        text += possibleText.charAt(
+          Math.floor(Math.random() * possibleText.length)
+        )
+      }
+      return date + '.' + text + '.jpeg'
+    },
+    generatedImage(image) {
+      console.log(image)
+      const arr = image && image.split(',')
+      const bstr = atob(arr[1])
+      let n = bstr.length
+      const u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+      }
+      const imageName = this.generateName()
+      const blob = new Blob([u8arr], { type: 'image/jpeg' })
+      const imageFile = new File([blob], imageName, {
+        type: 'image/jpeg',
+      })
+
+      return window.URL.createObjectURL(imageFile)
+    },
   },
 }
 </script>

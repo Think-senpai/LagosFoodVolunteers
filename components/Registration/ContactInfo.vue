@@ -5,6 +5,9 @@
         <!--<div>
         <img src="/logo.png" alt="" style="width: 120px" />
       </div>-->
+        <div class="flex items-end justify-end sm:hidden">
+          <img class="w-24" src="@/assets/images/logo.png" alt="" />
+        </div>
         <h1 class="text-xl md:text-3xl font-bold text-gray-800 mt-4">
           Become a Voluteer
         </h1>
@@ -57,7 +60,7 @@
                   id="phone"
                   v-model="register.phone"
                   placeholder="Enter your mobile no"
-                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
                 />
                 <p class="text-center text-red-500 text-xs mt-2">
                   {{ error.phone }}
@@ -73,7 +76,7 @@
                   id="address"
                   v-model="register.address"
                   placeholder="Enter your address"
-                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
                 />
                 <p class="text-center text-red-500 text-xs mt-2">
                   {{ error.address }}
@@ -120,7 +123,7 @@
                   v-model="register.country"
                   :country="register.country"
                   topCountry="NG"
-                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
                 />
                 <p class="text-center text-red-500 text-xs mt-2">
                   {{ error.country }}
@@ -133,7 +136,7 @@
                   :country="register.country"
                   :region="register.region"
                   defaultRegion="NG"
-                  class="border focus:bg-white focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="border focus:bg-white focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
                 />
                 <p class="text-center text-red-500 text-xs mt-2">
                   {{ error.region }}
@@ -142,7 +145,7 @@
             </div>
 
             <button
-              class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-6"
+              class="btn bg-brand-primary text-white tracking-wide py-3 sm:py-4 w-full mt-6"
               @click.prevent="submit"
             >
               <div class="flex justify-center items-center" v-if="loading">
@@ -157,7 +160,7 @@
     <div class="w-1/2 hidden lg:block fixed right-0 top-0">
       <img
         class="object-cover h-screen w-full"
-        src="@/assets/images/LFBI-Volunteers.jpg"
+        src="@/assets/images/LFBI-Volunteers1.jpg"
         alt=""
       />
     </div>

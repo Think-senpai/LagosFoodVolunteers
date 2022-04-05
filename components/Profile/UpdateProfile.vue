@@ -138,6 +138,7 @@ export default {
         return alert('Add a valid file')
       } else {
         this.uploadedImage = window.URL.createObjectURL(files[0])
+        console.log(this.uploadedImage)
         this.showprofileImage = false
         this.loadcrop()
       }

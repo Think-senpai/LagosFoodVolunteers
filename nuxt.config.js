@@ -27,6 +27,7 @@ export default {
     '~/plugins/datePicker.client.js',
     '~/plugins/firebase.client.js',
     '~plugins/vue-js-modal.js',
+    '~plugins/monthPicker.client.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

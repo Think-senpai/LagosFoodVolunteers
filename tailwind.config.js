@@ -39,6 +39,7 @@ module.exports = {
           backgroundOption: 'rgba(229, 229, 229, 1)',
           green: '#3BD814',
           backgroundGreen: 'rgba(202, 242, 151, 0.2)',
+          lightgreen: 'rgba(123, 155, 13, 1)',
         },
       },
     },

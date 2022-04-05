@@ -2,6 +2,9 @@
   <div class="items-center xl:items-start justify-center xl:justify-start">
     <div class="pt-4 w-full lg:w-1/2 md:px-10 flex items-center">
       <div class="max-w-lg mx-auto w-11/12 mb-6">
+        <div class="flex items-end justify-end sm:hidden">
+          <img class="w-24" src="@/assets/images/logo.png" alt="" />
+        </div>
         <h1 class="text-xl md:text-3xl font-bold text-gray-800 mt-4">
           Become a Voluteer
         </h1>
@@ -139,17 +142,26 @@
                 >
               </div>
               <div class="relative">
-                <input
-                  id="title"
-                  v-model="tagvalue"
-                  class="peer focus:outline-none flex-grow"
-                  type="text"
-                  placeholder="Product Designer"
-                  @input="onChange"
-                  @keydown.down="onArrowDown"
-                  @keydown.up="onArrowUp"
-                  @keydown.enter="onEnter"
-                />
+                <div class="flex">
+                  <input
+                    id="title"
+                    v-model="tagvalue"
+                    class="peer focus:outline-none flex-grow"
+                    type="text"
+                    placeholder="Product Designer"
+                    @input="onChange"
+                    @keydown.down="onArrowDown"
+                    @keydown.up="onArrowUp"
+                    @keydown.enter="onEnter"
+                  />
+                  <p
+                    class="text-brand-primary cursor-pointer"
+                    @click.prevent="addSkill"
+                    v-show="addNew"
+                  >
+                    Add Skill
+                  </p>
+                </div>
                 <ul
                   class="autocomplete-results border w-full border-gray-200 bg-gray-100 cursor-pointer absolute p-0 m-0"
                   v-show="isOpen"
@@ -193,7 +205,7 @@
           </div>
           <div>
             <button
-              class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-6"
+              class="btn bg-brand-primary text-white tracking-wide py-3 sm:py-4 w-full mt-6"
               @click.prevent="submit"
             >
               <div class="flex justify-center items-center" v-if="loading">
@@ -215,6 +227,7 @@
   </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import Spinner from '@/components/Spinner'
 export default {
   name: 'CompleteProfile',
@@ -242,25 +255,19 @@ export default {
       showprofile: true,
       image2: '',
       tagvalue: '',
-      skills: [
-        'Design',
-        'Coding',
-        'Wordpress',
-        'software development',
-        'Research',
-        'UI/UX',
-        'Frontend-development',
-        'Backend-development',
-        'Product designer',
-        'UX Engineer',
-        'Researcher',
-      ],
       results: [],
       isOpen: false,
       arrowCounter: -1,
+      addNew: false,
     }
   },
+  computed: {
+    ...mapGetters({
+      skills: 'skills',
+    }),
+  },
   methods: {
+    ...mapActions(['getSklls', 'addSkills']),
     upload() {
       this.$refs.input.click()
     },
@@ -297,10 +304,15 @@ export default {
       })
     },
     filterResults() {
-      this.results = this.skills.filter(
+      this.results = this.skills[0]?.skills?.filter(
         // eslint-disable-next-line
         (skill) => skill.toLowerCase().indexOf(this.tagvalue.toLowerCase()) > -1
       )
+      if (this.results?.length === 0) {
+        this.addNew = true
+      } else {
+        this.addNew = false
+      }
     },
     onChange() {
       this.filterResults()
@@ -317,7 +329,7 @@ export default {
       }
     },
     onEnter() {
-      this.tagvalue = this.results[this.arrowCounter]
+      this.tagvalue = this.results && this.results[this.arrowCounter]
       this.arrowCounter = -1
       this.isOpen = false
     },
@@ -328,8 +340,6 @@ export default {
     },
     addTagValue(result) {
       this.tagvalue = result
-      console.log(this.tagvalue)
-      console.log(this.tagvalue)
       if (this.tagvalue !== '') {
         this.register.tags.push(this.tagvalue)
       }
@@ -342,6 +352,18 @@ export default {
       if (this.tagvalue === '') {
         this.register.tags.splice(index, 1)
       }
+    },
+    async addSkill() {
+      this.addNew = false
+      if (this.tagvalue !== '') {
+        this.register.tags.push(this.tagvalue)
+        this.skills[0].skills.push(this.tagvalue)
+        const data = {
+          skills: this.skills[0].skills,
+        }
+        await this.addSkills(data)
+      }
+      this.tagvalue = ''
     },
     submit() {
       this.loading = true
@@ -404,9 +426,9 @@ export default {
   destroyed() {
     document.removeEventListener('click', this.handleClickOutside)
   },
-  created() {
+  async created() {
     this.$store.commit('enableNext', false)
-    console.log(this.register.about)
+    await this.getSklls()
   },
 }
 </script>
