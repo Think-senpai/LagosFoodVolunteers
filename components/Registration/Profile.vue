@@ -5,6 +5,9 @@
         <!--<div>
         <img src="/logo.png" alt="" style="width: 120px" />
       </div>-->
+        <div class="flex items-end justify-end sm:hidden">
+          <img class="w-24" src="@/assets/images/logo.png" alt="" />
+        </div>
         <h1 class="text-xl md:text-3xl font-bold text-gray-800 mt-4">
           Become a Voluteer
         </h1>
@@ -47,7 +50,7 @@
             <p class="mt-3 text-xs md:text-sm">Education & Expriences</p>
           </div>
         </div>
-        <div class="mt-6 mb-6 block sm:hidden">
+        <!--<div class="mt-6 mb-6 block sm:hidden">
           <p class="text-gray-500 text-md">Sign up with</p>
           <div class="mt-4 mb-3 flex">
             <div
@@ -71,8 +74,8 @@
             <p class="text-gray-500 text-sm mx-1">or</p>
             <span class="w-40 border-b-2 mt-1"></span>
           </div>
-        </div>
-        <form class="grid grid-flow-row gap-4 pb-3">
+        </div>-->
+        <form class="mt-6 grid grid-flow-row gap-4 pb-3">
           <div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4 w-full">
               <div>
@@ -82,7 +85,7 @@
                   id="firstName"
                   v-model="register.firstName"
                   placeholder="Enter your first name"
-                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="focus:bg-white border focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
                 />
                 <p class="text-center text-red-500 text-xs mt-2">
                   {{ error.firstName }}
@@ -95,7 +98,7 @@
                   id="lastName"
                   v-model="register.lastName"
                   placeholder="Enter your first name"
-                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="focus:bg-white border focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
                 />
                 <p class="text-center text-red-500 text-xs mt-2">
                   {{ error.lastName }}
@@ -110,7 +113,7 @@
                   id="email"
                   v-model="register.email"
                   placeholder="Enter your email"
-                  class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                  class="focus:bg-white border focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
                 />
                 <p class="text-center text-red-500 text-xs mt-2">
                   {{ error.email }}
@@ -127,7 +130,7 @@
                     id="password"
                     v-model="register.password"
                     placeholder="Enter your password"
-                    class="focus:bg-white border focus:outline-none shadow-sm py-2 px-4 mt-2 w-full rounded-lg"
+                    class="focus:bg-white border focus:outline-none shadow-sm py-3 px-4 mt-2 w-full rounded-lg"
                   />
                 </div>
 
@@ -138,10 +141,13 @@
             </div>
 
             <button
-              class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-6"
+              class="btn bg-brand-primary text-white tracking-wide py-3 sm:py-4 w-full mt-6"
               @click.prevent="submit"
             >
-              Create Account
+              <div class="flex justify-center items-center" v-if="loading">
+                <Spinner />
+              </div>
+              <div v-else>Create Account</div>
             </button>
           </div>
           <p class="mt-4 text-center text-sm font-light text-gray-800">
@@ -176,19 +182,53 @@
         </form>
       </div>
     </div>
-    <div class="w-1/2 hidden lg:block fixed right-0 top-0">
-      <img
-        class="object-cover h-screen w-full"
-        src="@/assets/images/LFBI-Volunteers.jpg"
-        alt=""
-      />
+    <div
+      class="w-1/2 h-full hidden lg:block fixed right-0 top-0 bg-brand-lightgreen"
+    >
+      <div class="w-full p-10">
+        <div class="flex items-end justify-end">
+          <img class="w-32" src="@/assets/images/logo1.png" alt="" />
+        </div>
+        <div class="text-white mt-12 text-left w-10/12">
+          <h1 class="leading-10 text-5xl font-bold">Welcome to Lagos</h1>
+          <h1 class="leading-10 text-5xl font-bold mt-6">Food Bank</h1>
+          <p class="text-base mt-8 font-light">
+            Become a vounteer and help in addressing the problems of nutrition
+            in our beloved state.
+          </p>
+        </div>
+        <div class="mt-6 flex align-center text-center">
+          <div class="w-80">
+            <img class="w-full" src="@/assets/images/Hero Image.png" alt="" />
+          </div>
+          <div class="w-80">
+            <img class="w-full" src="@/assets/images/Hero Image1.png" alt="" />
+          </div>
+          <div class="w-80">
+            <img class="w-full" src="@/assets/images/Hero Image2.png" alt="" />
+          </div>
+          <div class="w-80">
+            <img class="w-full" src="@/assets/images/Hero Image1.png" alt="" />
+          </div>
+        </div>
+        <div class="flex flex-col justify-center items-center text-center">
+          <h2 class="text-white">Become a Volunteer</h2>
+          <p class="mt-4 text-white">
+            Addresing the problems of nutrition in our beloved state
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import Spinner from '@/components/Spinner'
 export default {
   name: 'Profile',
+  component: {
+    Spinner,
+  },
   data() {
     return {
       loading: false,
@@ -214,7 +254,7 @@ export default {
       return EMAIL_REGEX.test(email)
     },
     submit() {
-      this.$root.$emit('next')
+      this.loading = true
       if (this.register.firstName === '') {
         this.error.firstName = 'firstname is required'
         setTimeout(() => {
@@ -262,7 +302,6 @@ export default {
         this.$store.commit('enableNext', false)
       } else {
         this.$store.commit('enableNext', true)
-
         const payload = {
           firstName: this.register.firstName,
           lastName: this.register.lastName,
@@ -270,6 +309,10 @@ export default {
           password: this.register.password,
         }
         this.$store.commit('profile', payload)
+        setTimeout(() => {
+          this.loading = false
+          this.$root.$emit('next')
+        }, 1000)
       }
     },
   },

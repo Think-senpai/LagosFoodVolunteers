@@ -13,7 +13,7 @@
           />
           <img
             v-else
-            :src="updateImage"
+            :src="cropImage ? cropImage : updateImage"
             class="rounded-full w-28 text-center"
             alt=""
           />
@@ -102,6 +102,7 @@ export default {
   data() {
     return {
       showcrop: false,
+      cropImage: '',
       uploadedImage: '',
       showprofileImage: true,
     }
@@ -137,6 +138,7 @@ export default {
         return alert('Add a valid file')
       } else {
         this.uploadedImage = window.URL.createObjectURL(files[0])
+        console.log(this.uploadedImage)
         this.showprofileImage = false
         this.loadcrop()
       }
@@ -156,7 +158,7 @@ export default {
         },
       }
       this.$refs.croppieRef.result(options, (output) => {
-        this.updateImage = output
+        this.cropImage = output
         this.showcrop = false
         this.uploadedImage = ''
         this.showprofileImage = true
@@ -167,9 +169,8 @@ export default {
         firstName: this.updateProfile.firstName,
         lastName: this.updateProfile.lastName,
         title: this.updateProfile.title,
-        image: this.updateImage,
+        image: this.cropImage ? this.cropImage : this.updateImage,
       }
-      console.log(data)
       await this.updateProfileDetail(data)
       this.$modal.hide('update-profile-modal')
     },
@@ -178,7 +179,6 @@ export default {
     this.$root.$on('updateProfile', () => {
       this.$modal.show('update-profile-modal')
     })
-    console.log(this.updateProfile)
   },
 }
 </script>

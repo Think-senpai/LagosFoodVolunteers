@@ -15,7 +15,10 @@
                 <div class="flex flex-row">
                   <div class="mr-3">
                     <img
-                      :src="generatedImage"
+                      :src="
+                        currentProfile.image &&
+                        generateImage(currentProfile.image)
+                      "
                       class="rounded-full w-16"
                       alt=""
                     />
@@ -307,7 +310,13 @@
         <div
           class="col-span-3 md:col-span-1 py-8 px-6 border-2 border-gray-300 w-full rounded-lg bg-brand-backgroundLight mb-10 flex flex-col"
         >
-          <h3 class="font-medium text-gray-400 mb-2">SKILL SET</h3>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-medium text-gray-400 mb-2">SKILL SET</h3>
+            <div class="cursor-pointer" @click="toggleUpdateSkill()">
+              <img :src="require('@/assets/icon/edit.svg')" class="" alt="" />
+            </div>
+          </div>
+
           <div class="flex flex-wrap mt-6">
             <button
               class="bg-brand-primaryLight border border-green-800 px-1 py-2 flex items-center justify-between rounded-md mr-6 mb-4"
@@ -341,7 +350,13 @@
           </div>
           <div class="mt-6">
             <h3 class="font-medium text-gray-400 mb-2">LANGUAGES</h3>
-            <h3 class="font-medium mb-2">English, Yoruba</h3>
+            <h3
+              class="font-medium mb-2"
+              v-for="(language, index) in currentProfile.languages"
+              :key="index"
+            >
+              {{ language }}
+            </h3>
           </div>
         </div>
       </div>
@@ -351,6 +366,7 @@
       <edit-Experience :editableProfile="editableProfile" />
       <about-About :about="about" />
       <update-profile :profile="profile" :image="image" />
+      <update-skill :skills="skills" />
     </div>
   </div>
 </template>
@@ -365,19 +381,21 @@ import EditEducation from '@/components/Profile/EditEducation'
 import EditExperience from '@/components/Profile/EditExperience'
 import UpdateAbout from '@/components/Profile/UpdateAbout'
 import UpdateProfile from '@/components/Profile/UpdateProfile'
+import UpdateSkill from '@/components/Profile/UpdateSkill'
 import Spinner from '@/components/Spinner'
 export default {
   layout: 'profile',
   data() {
     return {
       loading: false,
-      generatedImage: '',
       editableProfile: {},
+      generatedImage: '',
       experiences: [],
       educations: [],
       about: {},
       profile: [],
       image: '',
+      skills: [],
     }
   },
   components: {
@@ -387,6 +405,7 @@ export default {
     'edit-Experience': EditExperience,
     'about-About': UpdateAbout,
     'update-profile': UpdateProfile,
+    'update-skill': UpdateSkill,
     Spinner,
   },
   methods: {
@@ -412,9 +431,16 @@ export default {
     },
     toggleProfileModal() {
       this.profile = this.currentProfile
-      this.image = this.generatedImage
-      console.log(this.image)
+      this.image =
+        this.currentProfile.image &&
+        this.generateImage(this.currentProfile.image)
+      console.log('this.image', this.generatedImage)
       this.$root.$emit('updateProfile')
+    },
+    toggleUpdateSkill() {
+      this.skills = this.currentProfile.tags
+      console.log(this.skills)
+      this.$root.$emit('updateSkill')
     },
     generateName() {
       const date = new Date().valueOf()
@@ -427,6 +453,38 @@ export default {
         )
       }
       return date + '.' + text + '.jpeg'
+    },
+    generateImage(image) {
+      console.log(image)
+      const arr = image && image.split(',')
+      const bstr = atob(arr[1])
+      let n = bstr.length
+      const u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+      }
+      const imageName = this.generateName()
+      const blob = new Blob([u8arr], { type: 'image/jpeg' })
+      const imageFile = new File([blob], imageName, {
+        type: 'image/jpeg',
+      })
+      console.log(window.URL.createObjectURL(imageFile))
+      return window.URL.createObjectURL(imageFile)
+    },
+    async loadUser() {
+      this.loading = true
+      await firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          this.$store.dispatch('getCurrentProfile')
+        } else {
+          this.$router.push('/login')
+        }
+        if (this.currentProfile) {
+          this.loading = false
+          // this.generateImage(this.currentProfile.image)
+        }
+        console.log(this.currentProfile)
+      })
     },
   },
   computed: {
@@ -450,37 +508,8 @@ export default {
       }
     },
   },
-  async mounted() {
-    // window.location.reload()
-    this.loading = true
-    await firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.$store.dispatch('getCurrentProfile')
-        // console.log(user)
-        console.log(this.currentProfile)
-        // this.currentProfile = JSON.parse(localStorage.getItem('profile'))
-      } else {
-        this.$router.push('/login')
-      }
-      if (this.currentProfile) {
-        this.loading = false
-      }
-      // console.log(this.currentProfile)
-      const arr = this.currentProfile && this.currentProfile.image.split(',')
-      const bstr = atob(arr[1])
-      let n = bstr.length
-      const u8arr = new Uint8Array(n)
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n)
-      }
-      const imageName = this.generateName()
-      const blob = new Blob([u8arr], { type: 'image/jpeg' })
-      const imageFile = new File([blob], imageName, {
-        type: 'image/jpeg',
-      })
-      // console.log(window.URL.createObjectURL(imageFile))
-      this.generatedImage = window.URL.createObjectURL(imageFile)
-    })
+  created() {
+    this.loadUser()
   },
 }
 </script>

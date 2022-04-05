@@ -8,11 +8,16 @@
       <div class="flex flex-col md:flex-row mt-5 md:mt-10 mx-0 md:mx-5 w-full">
         <div class="flex flex-col mx-2 md:mx-4">
           <label class="mb-2 text-gray-500">Preferred skills</label>
-          <input
+          <select
             class="w-full rounded-md py-2 px-4 focus:outline-none"
             placeholder="Product designer"
             v-model="skill"
-          />
+          >
+            <option :value="''" disabled selected>select skills</option>
+            <option :value="skill" v-for="(skill, i) in tagskills" :key="i">
+              {{ skill }}
+            </option>
+          </select>
         </div>
         <div class="flex flex-col mx-2 md:mx-4">
           <label class="mb-2 text-gray-500">Location</label>
@@ -33,6 +38,7 @@
         <div class="mx-2 md:mx-4">
           <button
             class="bg-brand-primary mt-6 px-6 py-2 rounded-md flex items-center mr-0 mb-4 md:mr-6 md:mb-0 w-full"
+            @click="search"
           >
             <svg
               width="25"
@@ -70,13 +76,36 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
   data() {
     return {
       skill: '',
       level: '',
       location: '',
+      tagskills: [],
     }
+  },
+  props: {
+    dataBase: {
+      type: Array,
+      required: false,
+    },
+  },
+  computed: {
+    ...mapGetters({
+      skills: 'skills',
+    }),
+  },
+  methods: {
+    ...mapActions(['getSklls']),
+    search() {
+      
+    },
+  },
+  async created() {
+    await this.getSklls()
+    this.tagskills = this.skills && this.skills[0].skills
   },
 }
 </script>
