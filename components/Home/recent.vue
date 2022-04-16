@@ -12,11 +12,9 @@
         >
           <div class="flex flex-row">
             <div class="mr-0 md:mr-10">
-              <img
-                :src="recent.image"
-                class="rounded-full w-36 md:w-20"
-                alt=""
-              />
+              <div class="rounded-full w-12 md:w-20">
+                <img :src="generatedImage(recent.image)" class="" alt="" />
+              </div>
             </div>
             <div class="flex w-10/12 sm:w-9/12 md:w-full flex-col">
               <div class="hidden md:flex mb-3">
@@ -29,9 +27,13 @@
                 </div>
               </div>
               <h3 class="font-medium mb-2 mx-2">{{ recent.firstName }}</h3>
-              <p class="text-gray-400 mb-6 mx-2">{{ recent.about }}</p>
-              <div class="flex md:hidden mb-6">
-                <div v-for="(skill, idx) in recent.tags" :key="idx">
+              <p class="text-gray-400 mb-6 mx-2 p-2">{{ recent.about }}</p>
+              <div class="flex flex-wrap items-center gap-2 md:hidden mb-6">
+                <div
+                  v-for="(skill, idx) in recent.tags"
+                  :key="idx"
+                  class="flex justify-between flex-grow"
+                >
                   <button
                     class="bg-brand-primaryLight p-2 flex items-center justify-between rounded-md mr-2 md:mr-6"
                   >
@@ -45,7 +47,7 @@
             class="flex flex-row items-center text-center md:items-start md:text-left mb-6 md:ml-28 w-full"
           >
             <button
-              class="bg-brand-primaryLight border border-green-800 px-3 py-2 flex items-center justify-between rounded-md mr-6"
+              class="bg-brand-primaryLight border border-green-800 px-2 md:px-3 py-2 flex items-center justify-between rounded-md mr-6"
             >
               <img src="@/assets/icon/Profile.svg" alt="" />
               <span class="text-brand-primary text-sm ml-1">View profile</span>
@@ -124,7 +126,6 @@ export default {
       return date + '.' + text + '.jpeg'
     },
     generatedImage(image) {
-      console.log(image)
       const arr = image && image.split(',')
       const bstr = atob(arr[1])
       let n = bstr.length
@@ -137,7 +138,6 @@ export default {
       const imageFile = new File([blob], imageName, {
         type: 'image/jpeg',
       })
-
       return window.URL.createObjectURL(imageFile)
     },
   },

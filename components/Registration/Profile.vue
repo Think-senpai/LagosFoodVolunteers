@@ -159,7 +159,7 @@
             >
           </p>
 
-          <div class="mt-4 text-center mx-auto hidden sm:block">
+          <div class="mt-4 text-center mx-auto">
             <p class="text-gray-500">or Continue with</p>
             <div class="mt-4 mb-3 flex">
               <div
