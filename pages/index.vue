@@ -1,7 +1,7 @@
 <template>
   <div class="pt-16 pb-10 px-4 md:px-16 bg-brand-background">
     <topNav />
-    <searchVolunteer :dataBase="data" />
+    <searchVolunteer :dataBase="data" @search="search" />
     <div class="border-b-2 my-8 w-full border-gray-300" />
     <recent :dataBase="data" />
   </div>
@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       data: [],
+      filtered: [],
     }
   },
   computed: {
@@ -31,6 +32,17 @@ export default {
   },
   methods: {
     ...mapActions(['getDatabase']),
+    search(skill) {
+      if (skill === 'all') {
+        this.data = this.dataBase
+      }
+      if (this.dataBase && skill !== 'all') {
+        this.data = this.dataBase.filter((data) => {
+          // eslint-disable-next-line
+          return data.tags.toString().indexOf(skill.toLowerCase()) >= 0
+        })
+      }
+    },
   },
   async created() {
     await this.getDatabase()

@@ -5,7 +5,7 @@
       class="py-8 px-2 md:px-4 bg-brand-primaryLight w-full flex flex-col rounded-lg"
     >
       <h3 class="flex mx-auto">Search Volunteer</h3>
-      <div class="flex flex-col md:flex-row mt-5 md:mt-10 mx-0 md:mx-5 w-full">
+      <div class="flex flex-col lg:flex-row mt-5 md:mt-10 mx-0 md:mx-5 w-full">
         <div class="flex flex-col mx-2 md:mx-4">
           <label class="mb-2 text-gray-500">Preferred skills</label>
           <select
@@ -14,6 +14,7 @@
             v-model="skill"
           >
             <option :value="''" disabled selected>select skills</option>
+            <option value="all">All</option>
             <option :value="skill" v-for="(skill, i) in tagskills" :key="i">
               {{ skill }}
             </option>
@@ -80,10 +81,10 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   data() {
     return {
-      skill: '',
       level: '',
       location: '',
       tagskills: [],
+      skill: '',
     }
   },
   props: {
@@ -100,7 +101,7 @@ export default {
   methods: {
     ...mapActions(['getSklls']),
     search() {
-      
+      this.$emit('search', this.skill)
     },
   },
   async created() {
