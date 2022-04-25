@@ -47,6 +47,7 @@ export default {
   async created() {
     await this.getDatabase()
     this.data = await this.dataBase
+    console.log(this.data)
   },
 }
 </script>

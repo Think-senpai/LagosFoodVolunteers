@@ -26,7 +26,9 @@
                   </button>
                 </div>
               </div>
-              <h3 class="font-medium mb-2 mx-2">{{ recent.firstName }}</h3>
+              <h3 class="font-medium mb-2 mx-2">
+                {{ recent.firstName }} {{ recent.lastName }}
+              </h3>
               <p class="text-gray-400 mb-6 mx-2 p-2">{{ recent.about }}</p>
               <div class="flex flex-wrap items-center gap-2 md:hidden mb-6">
                 <div
@@ -46,12 +48,16 @@
           <div
             class="flex flex-row items-center text-center md:items-start md:text-left mb-6 md:ml-28 w-full"
           >
-            <button
-              class="bg-brand-primaryLight border border-green-800 px-2 md:px-3 py-2 flex items-center justify-between rounded-md mr-6"
-            >
-              <img src="@/assets/icon/Profile.svg" alt="" />
-              <span class="text-brand-primary text-sm ml-1">View profile</span>
-            </button>
+            <router-link :to="'/profiles/' + index">
+              <button
+                class="bg-brand-primaryLight border border-green-800 px-2 md:px-3 py-2 flex items-center justify-between rounded-md mr-6"
+              >
+                <img src="@/assets/icon/Profile.svg" alt="" />
+                <span class="text-brand-primary text-sm ml-1"
+                  >View profile</span
+                >
+              </button>
+            </router-link>
             <button
               class="bg-brand-primary px-3 py-2 flex items-center justify-between rounded-md"
             >
