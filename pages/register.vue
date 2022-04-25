@@ -5,12 +5,14 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 import EducationExprience from '@/components/Registration/EducationExprience'
 import Profile from '@/components/Registration/Profile'
 import CompleteProfile from '@/components/Registration/CompleteProfile'
 import ContactInfo from '@/components/Registration/ContactInfo'
 import ProfileSuccessful from '@/components/Registration/ProfileSuccessful'
 export default {
+  layout: 'auth',
   name: 'RegisterPage',
   data() {
     return {
@@ -35,10 +37,23 @@ export default {
       ],
     }
   },
+  computed: {
+    ...mapGetters({
+      enableNext: 'next',
+    }),
+  },
+  methods: {
+    ...mapActions(['signOut']),
+  },
   mounted() {
     this.$root.$on('next', () => {
-      this.currentPage++
+      if (this.enableNext) {
+        this.currentPage++
+      }
     })
+  },
+  created() {
+    this.signOut()
   },
 }
 </script>

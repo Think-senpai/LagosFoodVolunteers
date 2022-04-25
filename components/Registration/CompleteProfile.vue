@@ -2,6 +2,9 @@
   <div class="items-center xl:items-start justify-center xl:justify-start">
     <div class="pt-4 w-full lg:w-1/2 md:px-10 flex items-center">
       <div class="max-w-lg mx-auto w-11/12 mb-6">
+        <div class="flex items-end justify-end sm:hidden">
+          <img class="w-24" src="@/assets/images/logo.png" alt="" />
+        </div>
         <h1 class="text-xl md:text-3xl font-bold text-gray-800 mt-4">
           Become a Voluteer
         </h1>
@@ -49,7 +52,9 @@
             <label class="mb-4">Upload Profile picture</label>
             <img v-if="!image2" src="/profile.png" alt="" @click="upload" />
             <img v-else :src="image2" alt="" class="w-40 text-left" />
-
+            <p class="text-center text-red-500 text-xs mt-2">
+              {{ error.image }}
+            </p>
             <input
               id="input"
               ref="input"
@@ -94,23 +99,29 @@
             <textarea
               id="about you"
               name=""
-              v-model="about"
+              v-model="register.about"
               placeholder="Tell us a summary about who you are"
               class="w-full p-3 rounded-2xl border focus:bg-white visited:bg-white focus:border-brand-primary focus:outline-none"
               cols="20"
               rows="5"
             ></textarea>
+            <p class="text-center text-red-500 text-xs mt-2">
+              {{ error.about }}
+            </p>
           </div>
 
           <div class="">
             <label class="text-lg pl-1" for="title">Title</label>
             <input
               id="title"
-              v-model="title"
+              v-model="register.title"
               class="border px-2 py-3 rounded-md w-full focus:bg-white focus:border-brand-primary focus:outline-none"
               type="text"
               placeholder="Product Designer"
             />
+            <p class="text-center text-red-500 text-xs mt-2">
+              {{ error.title }}
+            </p>
           </div>
 
           <div class="">
@@ -119,7 +130,7 @@
               class="tags border flex flex-wrap items-center gap-2 px-4 py-3 rounded-md w-full peer-focus:bg-white peer-focus:border-brand-primary focus:outline-none"
             >
               <div
-                v-for="(tag, index) in tags"
+                v-for="(tag, index) in register.tags"
                 :key="tag"
                 class="bg-brand-acccentLight tag flex-grow border border-brand-primary px-3 mr-3 py-1 rounded-md text-gray-700"
               >
@@ -130,24 +141,57 @@
                   >x</span
                 >
               </div>
-              <input
-                id="title"
-                v-model="tagvalue"
-                class="peer focus:outline-none flex-grow"
-                type="text"
-                placeholder="Product Designer"
-                @keydown.enter.prevent="addTagValue"
-              />
+              <div class="relative">
+                <div class="flex">
+                  <input
+                    id="title"
+                    v-model="tagvalue"
+                    class="peer focus:outline-none flex-grow"
+                    type="text"
+                    placeholder="Product Designer"
+                    @input="onChange"
+                    @keydown.down="onArrowDown"
+                    @keydown.up="onArrowUp"
+                    @keydown.enter="onEnter"
+                  />
+                  <p
+                    class="text-brand-primary cursor-pointer"
+                    @click.prevent="addSkill"
+                    v-show="addNew"
+                  >
+                    Add Skill
+                  </p>
+                </div>
+                <ul
+                  class="autocomplete-results border w-full border-gray-200 bg-gray-100 cursor-pointer absolute p-0 m-0"
+                  v-show="isOpen"
+                  ref="toggle"
+                >
+                  <li
+                    class="px-5"
+                    :class="{ 'bg-brand-acccentLight': i === arrowCounter }"
+                    v-for="(result, i) in results"
+                    :key="i"
+                    @click="addTagValue(result)"
+                  >
+                    {{ result }}
+                  </li>
+                </ul>
+              </div>
+              <!--<search-auto-complete :model="tagvalue" :skills="skills" />-->
             </div>
 
-            <small>*Main skills first then additional skills</small>
+            <small>*Main skills first then additional skills </small>
+            <p class="text-center text-red-500 text-xs mt-2">
+              {{ error.tags }}
+            </p>
           </div>
           <div>
             <label for="shirt">T-Shirt size: </label>
             <select
               id=""
               name="shirt"
-              v-model="size"
+              v-model="register.size"
               class="border px-3 py-1 ml-2 rounded-md"
             >
               <option value="sm">small</option>
@@ -155,40 +199,21 @@
               <option value="l">Large</option>
               <option value="xl">X Large</option>
             </select>
+            <p class="text-center text-red-500 text-xs mt-2">
+              {{ error.size }}
+            </p>
           </div>
           <div>
             <button
-              class="btn bg-brand-primary text-white tracking-wide py-2 sm:py-4 w-full mt-6"
+              class="btn bg-brand-primary text-white tracking-wide py-3 sm:py-4 w-full mt-6"
               @click.prevent="submit"
             >
-              Continue
+              <div class="flex justify-center items-center" v-if="loading">
+                <Spinner />
+              </div>
+              <div v-else>Continue</div>
             </button>
           </div>
-          <!--<p class="mt-4 text-center text-sm font-light text-gray-800">
-            Have an account?
-            <span class="font-semibold text-brand-primary">login</span>
-          </p>
-
-          <div class="mt-4 text-center mx-auto">
-            <p>or Continue with</p>
-            <div class="mt-4 mb-3 flex">
-              <div
-                class="bg-red-300 px-2 md:px-4 py-2 rounded-md text-red-900 mx-1 sm:mx-3 text-sm font-medium"
-              >
-                Google
-              </div>
-              <div
-                class="bg-blue-400 px-2 md:px-4 py-2 rounded-md text-white mx-1 sm:mx-3 text-sm font-medium"
-              >
-                Linkedlin
-              </div>
-              <div
-                class="bg-blue-900 px-2 md:px-4 py-2 rounded-md text-white mx-1 sm:mx-3 text-sm font-medium"
-              >
-                Facebook
-              </div>
-            </div>
-          </div>-->
         </form>
       </div>
     </div>
@@ -202,22 +227,47 @@
   </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import Spinner from '@/components/Spinner'
 export default {
   name: 'CompleteProfile',
+  component: {
+    Spinner,
+  },
   data() {
     return {
-      about: '',
-      title: '',
-      size: '',
+      loading: false,
+      register: {
+        about: '',
+        title: '',
+        size: '',
+        tags: ['designer'],
+      },
+      error: {
+        about: '',
+        title: '',
+        size: '',
+        tags: '',
+        image: '',
+      },
       image: '',
       showcrop: false,
       showprofile: true,
       image2: '',
       tagvalue: '',
-      tags: ['designer'],
+      results: [],
+      isOpen: false,
+      arrowCounter: -1,
+      addNew: false,
     }
   },
+  computed: {
+    ...mapGetters({
+      skills: 'skills',
+    }),
+  },
   methods: {
+    ...mapActions(['getSklls', 'addSkills']),
     upload() {
       this.$refs.input.click()
     },
@@ -253,22 +303,132 @@ export default {
         this.showprofile = true
       })
     },
-    addTagValue() {
-      if (this.addTagValue !== '') {
-        this.tags.push(this.tagvalue)
+    filterResults() {
+      this.results = this.skills[0]?.skills?.filter(
+        // eslint-disable-next-line
+        (skill) => skill.toLowerCase().indexOf(this.tagvalue.toLowerCase()) > -1
+      )
+      if (this.results?.length === 0) {
+        this.addNew = true
+      } else {
+        this.addNew = false
       }
+    },
+    onChange() {
+      this.filterResults()
+      this.isOpen = true
+    },
+    onArrowDown() {
+      if (this.arrowCounter < this.results.length) {
+        this.arrowCounter = this.arrowCounter + 1
+      }
+    },
+    onArrowUp() {
+      if (this.arrowCounter > 0) {
+        this.arrowCounter = this.arrowCounter - 1
+      }
+    },
+    onEnter() {
+      this.tagvalue = this.results && this.results[this.arrowCounter]
+      this.arrowCounter = -1
+      this.isOpen = false
+    },
+    handleClickOutside(event) {
+      if (!this.$refs.toggle.contains(event.target)) {
+        this.isOpen = false
+      }
+    },
+    addTagValue(result) {
+      this.tagvalue = result
+      if (this.tagvalue !== '') {
+        this.register.tags.push(this.tagvalue)
+      }
+      this.isOpen = false
       this.tagvalue = ''
     },
     removeTagValue(index) {
       console.log('target', index)
       //  console.log('deleted')
       if (this.tagvalue === '') {
-        this.tags.splice(index, 1)
+        this.register.tags.splice(index, 1)
       }
     },
-    submit() {
-      this.$root.$emit('next')
+    async addSkill() {
+      this.addNew = false
+      if (this.tagvalue !== '') {
+        this.register.tags.push(this.tagvalue)
+        this.skills[0].skills.push(this.tagvalue)
+        const data = {
+          skills: this.skills[0].skills,
+        }
+        await this.addSkills(data)
+      }
+      this.tagvalue = ''
     },
+    submit() {
+      this.loading = true
+      if (this.register.about === '') {
+        this.error.about = 'About is required'
+        setTimeout(() => {
+          this.error.about = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else if (this.register.title === '') {
+        this.error.title = 'Title is required'
+        setTimeout(() => {
+          this.error.title = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else if (this.register.tags.length === 0) {
+        this.error.tags = 'Skills is required'
+        setTimeout(() => {
+          this.error.tags = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else if (this.register.size === '') {
+        this.error.size = 'Size is required'
+        setTimeout(() => {
+          this.error.size = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else if (this.image2 === '') {
+        this.error.image = 'Image is required'
+        setTimeout(() => {
+          this.error.size = ''
+        }, 1000)
+        this.loading = false
+        this.$store.commit('enableNext', false)
+      } else {
+        this.$store.commit('enableNext', true)
+
+        const payload = {
+          about: this.register.about,
+          title: this.register.title,
+          tags: this.register.tags,
+          size: this.register.size,
+          image: this.image2,
+        }
+        this.$store.commit('completeProfile', payload)
+        setTimeout(() => {
+          this.$root.$emit('next')
+          this.loading = false
+        }, 1000)
+      }
+    },
+  },
+  mounted() {
+    document.addEventListener('click', this.handleClickOutside)
+  },
+  destroyed() {
+    document.removeEventListener('click', this.handleClickOutside)
+  },
+  async created() {
+    this.$store.commit('enableNext', false)
+    await this.getSklls()
   },
 }
 </script>
@@ -278,8 +438,6 @@ export default {
   margin: 0 !important;
 }
 .tag {
-  background: #c8efda;
-  color: #498202;
   display: flex;
   justify-content: space-between;
 }

@@ -25,6 +25,9 @@ export default {
     '~/plugins/croppie.client.js',
     '~/plugins/selectCountry.client.js',
     '~/plugins/datePicker.client.js',
+    '~/plugins/firebase.client.js',
+    '~plugins/vue-js-modal.js',
+    '~plugins/monthPicker.client.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
