@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-10">
+  <div class="mt-5">
     <h2 class="mb-4 text-2xl">Search Volunteer</h2>
     <div
       class="py-8 px-2 md:px-4 bg-brand-primaryLight w-full flex flex-col rounded-lg"

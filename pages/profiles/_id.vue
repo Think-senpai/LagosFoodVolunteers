@@ -220,7 +220,6 @@
 import { mapActions, mapGetters } from 'vuex'
 import Spinner from '@/components/Spinner'
 export default {
-  layout: 'profile',
   data() {
     return {
       loading: false,
