@@ -1,5 +1,5 @@
 <template>
-  <div class="flex pt-4 justify-between">
+  <div class="pt-4 justify-between hidden md:flex">
     <div>
       <img src="@/assets/images/logo.png" class="h-10" />
     </div>
