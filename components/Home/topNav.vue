@@ -1,8 +1,9 @@
 <template>
   <div class="pt-4 justify-between hidden md:flex">
-    <div>
-      <img src="@/assets/images/logo.png" class="h-10" />
+    <div class="bg-brand-background hidden md:block">
+      <img src="@/assets/images/logo.png" class="h-16 pt-4 ml-5" />
     </div>
+
     <div
       class="flex flex-col items-end justify-between md:flex-row text-left mr-0 md:mr-40"
     >
