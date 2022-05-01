@@ -483,7 +483,6 @@ export default {
           this.loading = false
           // this.generateImage(this.currentProfile.image)
         }
-        console.log(this.currentProfile)
       })
     },
   },

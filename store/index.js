@@ -136,10 +136,6 @@ export const actions = {
   },
   async getDatabase({ commit }) {
     const snapshot = await firebase.firestore().collection('volunteers').get()
-    console.log(
-      'snapshot.',
-      snapshot.docs.map((doc) => doc.data())
-    )
     commit(
       'dataBase',
       snapshot.docs.map((doc) => doc.data())
@@ -171,7 +167,6 @@ export const actions = {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          console.log('data:', doc.data())
           commit('currentProfile', doc.data())
           localStorage.setItem('profile', JSON.stringify(doc.data()))
         } else {
